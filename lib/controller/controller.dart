@@ -13,6 +13,7 @@ import 'package:sqlorder24/components/customSnackbar.dart';
 import 'package:sqlorder24/components/sunmi.dart';
 import 'package:sqlorder24/db_helper.dart';
 import 'package:sqlorder24/model/2_registration_model.dart';
+import 'package:sqlorder24/model/2_sidemenu_model.dart';
 import 'package:sqlorder24/model/accounthead_model.dart';
 import 'package:sqlorder24/model/productCompany_model.dart';
 import 'package:sqlorder24/model/productUnitsModel.dart';
@@ -452,22 +453,37 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  initPrimaryDb(BuildContext context) async {
+  initPrimaryDb(BuildContext context, Map<String, dynamic> temp) async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? db = "APP_REGISTER";
-    String? ip = "103.177.225.245";
-    String? port = "54321";
-    String? un = "sa";
-    String? pw = "##v0e3g9a#";
     debugPrint("Connecting...PrimaryDB..");
+    String? db = "";
+    String? ip = "";
+    String? port = "";
+    String? un = "";
+    String? pw = "";
+    if (temp != null || temp.isNotEmpty) {
+      print("Connecting...dbfrom storage-------$temp");
+      db = temp["DB"];
+      ip = temp["IP"];
+      port = temp["PORT"];
+      un = temp["USR"];
+      pw = temp["PWD"];
+    } else {
+      db = "APP_REGISTER";
+      ip = "103.177.225.245";
+      port = "54321";
+      un = "sa";
+      pw = "##v0e3g9a#";
+    }
+
     debugPrint("IP : $ip, PORT : $port, DB: $db, USR : $un, PWD : $pw");
     try {
       await SqlConn.connect(
-        ip: ip,
-        port: port,
-        databaseName: db,
-        username: un,
-        password: pw,
+        ip: ip!,
+        port: port!,
+        databaseName: db!,
+        username: un!,
+        password: pw!,
       );
       debugPrint("Connected!");
       Navigator.push(
@@ -525,6 +541,7 @@ class Controller extends ChangeNotifier {
   //   //   }
   //   // }
   // }
+
   Future<RegistrationData?> registrationWithSQL(
       String company_code,
       String? deviceid,
@@ -577,7 +594,7 @@ class Controller extends ChangeNotifier {
             conUsr = regModel.conuser;
             conPass = regModel.conpass;
             conDb = regModel.condb;
-            userType=regModel.logintype;
+            userType = regModel.logintype;
             print("added cid-$cid ,cnm-$cname");
             notifyListeners();
             // await externalDir.fileWrite(fp1!);
@@ -601,18 +618,24 @@ class Controller extends ChangeNotifier {
             prefs.setString("conPass", conPass!);
             prefs.setString("conDb", conDb!);
             prefs.setString("userType", userType!);
-
             print("done");
 
             String? fp1 = prefs.getString("fp");
+            await getMenuAPi(userType!, context);
+
             // getMaxSerialNumber(os);
             int con = await initSecondaryDb(context);
-            if (con == 1) {
+            if (con == 1) 
+            {
               print("connected 2nd");
               await getCompanyData(context);
-              //getMenuAPi(cid!, fp1!, company_code, context);
+              await getMasterData("staff", context, 0, "");
+              await getMasterData("settings", context, 0, "");
+              await getMasterData("area", context, 0, "");
               await getbranchlist(context);
-            } else {
+            } 
+            else 
+            {
               CustomSnackbar snackbar = CustomSnackbar();
               snackbar.showSnackbar(context, "Error Connecting Database", "");
               print("NOT connected 2nd");
@@ -663,7 +686,6 @@ class Controller extends ChangeNotifier {
 
         print("branchlist length---$br_length");
       }
-
       int brlen;
       if (branch_List.isEmpty || branch_List.length == 0) {
         brlen = 0;
@@ -874,7 +896,8 @@ class Controller extends ChangeNotifier {
               );
             } else {
               if (type == "splash") {
-                getSettings(context, cid!, "");
+                getMasterData("settings", context, 0, "");
+                // getSettings(context, cid!, "");
               }
             }
           }
@@ -889,63 +912,122 @@ class Controller extends ChangeNotifier {
   }
 
   //////////////////////GET MENU////////////////////////////////////////
-  Future<RegistrationData?> getMenuAPi(String company_code, String fp,
-      String apk_key, BuildContext context) async {
+  Future<RegistrationData?> getMenuAPi(
+      String log_type, BuildContext context) async {
     var res;
-    NetConnection.networkConnection(context, "").then((value) async {
-      if (value == true) {
-        print("company_code---fp-${company_code}---${fp}..${apk_key}");
-        
-        try {
-          Uri url = Uri.parse("https://trafiqerp.in/order/fj/get_menu.php");
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? br_id1 = prefs.getString("br_id");
+    SideMenu2 sidemenuModel = SideMenu2();
+    print("Log type----${log_type}---");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      menuList.clear();
+      var res = await SqlConn.readData("SP_GET_MENU '$log_type'");
+      List<dynamic> map = jsonDecode(res);
+      print("Menu details----------${res.runtimeType}");
+      print("Menu details----------${res}");
+      print("Menu decodedRespons ${map.runtimeType}");
+      for (var item in map) {
+        Map<String, dynamic> menumap = {};
+        sidemenuModel = SideMenu2.fromJson(item);
+        firstMenu = item["first"].toString();
+        menu_index = firstMenu;
+        menumap["menu_index"] = item["menu_index"].toString();
+        menumap["menu_name"] = item["menu_name"].toString();
+        menuList.add(menumap);
+        print("menuitem----${menumap}");
 
-          String branch_id;
-          if (br_id1 == null || br_id1 == " " || br_id1 == "null") {
-            branch_id = " ";
-          } 
-          else 
-          {
-            branch_id = br_id1;
-          }
-          
-          Map body = {
-            'apk_key': apk_key,
-            'company_code': company_code,
-            'fingerprint': fp,
-            'br_id': branch_id
-          };
-          print("body.........$body");
-          http.Response response = await http.post(
-            url,
-            body: body,
-          );
-
-          print("bodymenuuuuuu ${body}");
-          var map = jsonDecode(response.body);
-          print("map menu ${map}");
-          SideMenu sidemenuModel = SideMenu.fromJson(map);
-          firstMenu = sidemenuModel.first;
-          menu_index = firstMenu;
-          print("menuitem----${sidemenuModel.menu![0].menu_name}");
-          print("firstMenu----$firstMenu");
-
-          prefs.setString("firstMenu", firstMenu!);
-          for (var menuItem in sidemenuModel.menu!) {
-            print("menuitem----${menuItem.menu_name}");
-            res = await OrderAppDB.instance
-                .insertMenuTable(menuItem.menu_index!, menuItem.menu_name!);
-            // menuList.add(menuItem);
-          }
-          print("insertion----$res");
-          notifyListeners();
-        } catch (e) {
-          print(e);
-          return null;
-        }
+        res = await OrderAppDB.instance.insertMenuTable(
+            item["menu_index"].toString(), item["menu_name"].toString());
       }
-    });
+      print("menuitemList----${menuList}");
+      print("menuitem----${sidemenuModel.menu_name}");
+      print("firstMenu----$firstMenu");
+      print("firstMenu index----$menu_index");
+      prefs.setString("firstMenu", firstMenu!);
+      // for (var item in sidemenuModel) {
+      //   print("menuitem----${menuItem.menu_name}");
+      //   res = await OrderAppDB.instance
+      //       .insertMenuTable(menuItem.menu_index!, menuItem.menu_name!);
+      //   // menuList.add(menuItem);
+      // }
+      print("insertion--MenuTable--$res");
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+/////////////////////////////////MASTER DATA/////////////////////////
+  getMasterData(
+      String datavalue, BuildContext context, int index, String page) async {
+    var res;
+    SideMenu2 sidemenuModel = SideMenu2();
+    print("Data Value----${datavalue}---");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      isDownloaded = true;
+      isCompleted = true;
+      if (page != "company details") {
+        isLoading = true;
+        notifyListeners();
+      }
+      var res = await SqlConn.readData("FLT_GET_MASTER_DATA '$datavalue'");
+      List<dynamic> map = jsonDecode(res);
+      print("Master details----$datavalue------${res.runtimeType}");
+      print("Master details-----$datavalue-----${res}");
+      print("Master decodedRespons ${map.runtimeType}");
+      if (datavalue == "staff") {
+        var restaff;
+        await OrderAppDB.instance
+            .deleteFromTableCommonQuery("staffDetailsTable", "");
+        print("getStaffDetails...............${map}");
+        for (var staff in map) {
+           print("object--${staff["PWD"].runtimeType}");
+          //  print("object--${staff["TRACK"].runtimeType}");
+          staffModel = StaffDetails.fromJson(staff);
+         
+          restaff = await OrderAppDB.instance.insertStaffDetails(staffModel);
+        }
+        print("inserted staff ${restaff}");
+      } else if (datavalue == "settings") {
+         await OrderAppDB.instance
+              .deleteFromTableCommonQuery("settingsTable", "");
+          print("settings map ${map}");
+
+          SettingsModel settingsModal;
+          // walletModal.
+          for (var item in map) {
+            print("object-1-${item["set_id"].runtimeType}");
+            print("object-2-${item["set_code"].runtimeType}");
+            print("object-3-${item["set_value"].runtimeType}");
+            print("object-4-${item["set_type"].runtimeType}");
+            settingsModal = SettingsModel.fromJson(item);
+            await OrderAppDB.instance.insertsettingsTable(settingsModal);
+          }
+      }else if(datavalue == "area"){
+         await OrderAppDB.instance
+          .deleteFromTableCommonQuery('areaDetailsTable', "");
+
+      for (var staffarea in map) {
+        print("staffarea----${staffarea.length}");
+        staffArea = StaffArea.fromJson(staffarea);
+        var staffar =
+            await OrderAppDB.instance.insertStaffAreaDetails(staffArea);
+        print("inserted ${staffar}");
+      }
+      }
+      isDownloaded = false;
+      isDown[index] = true;
+      if (page != "company details") {
+        isLoading = false;
+        notifyListeners();
+      }
+
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   /////////////////////////// GET BALANCE ////////////////////////////
@@ -1015,7 +1097,6 @@ class Controller extends ChangeNotifier {
       Uri url = Uri.parse("https://trafiqerp.in/order/fj/get_staff.php");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? br_id1 = prefs.getString("br_id");
-
       String branch_id;
       if (br_id1 == null || br_id1 == " " || br_id1 == "null") {
         branch_id = " ";
@@ -4970,7 +5051,7 @@ class Controller extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     print("s start--------${s.runtimeType}");
-      
+
     for (int i = 0; i < branch_List.length; i++) {
       if (branch_List[i]["BR_ID"].toString() == s) {
         branch_name = branch_List[i]["BR_NAME"];
@@ -4980,7 +5061,7 @@ class Controller extends ChangeNotifier {
         prefs.setString("br_name", branch_name!);
         notifyListeners();
         br_addr_map = {
-          "br_id":br_id!,
+          "br_id": br_id!,
           "br_name": branch_name,
           // "ad1": branch_List[i]["ad1"].toString(),
           // "ad2": branch_List[i]["ad2"].toString(),
@@ -4991,17 +5072,17 @@ class Controller extends ChangeNotifier {
           // "em": branch_List[i]["em"].toString(),
           // "gst": branch_List[i]["gst"].toString(),
         };
-        
+
         // br_id =await prefs.getString("br_id");
         // branch_name = prefs.getString("br_name");
         // notifyListeners();
-        // print("brnck===== ${br_id.toString()}");  
+        // print("brnck===== ${br_id.toString()}");
       }
-    } 
+    }
     isLoading = false;
     print("s end------$s");
     getCompanyData(context);
- 
+
     notifyListeners();
   }
 }

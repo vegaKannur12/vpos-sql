@@ -431,25 +431,26 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                                           "compny deatils userType----$userType");
 
                                       firstMenu = prefs.getString("firstMenu");
+                                      
                                       print("first---------$firstMenu");
-
                                       if (firstMenu != null) {
                                         Provider.of<Controller>(context,
                                                 listen: false)
                                             .menu_index = firstMenu;
-
                                         print(Provider.of<Controller>(context,
                                                 listen: false)
                                             .menu_index);
                                       }
-
                                       String? cid = prefs.getString("cid");
-                                       String? brrid = prefs.getString("br_id");
+                                      String? brrid = prefs.getString("br_id");
 
-                                      Provider.of<Controller>(context,
-                                              listen: false)
-                                          .getAreaDetails(
-                                              cid!, 0, "company details");
+                                      // Provider.of<Controller>(context,
+                                      //         listen: false)
+                                      //     .getAreaDetails(
+                                      //         cid!, 0, "company details");
+                                                 Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("area", context, 0, "company details");
 
                                       Provider.of<Controller>(context,
                                               listen: false)
@@ -463,14 +464,20 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                                             .deleteFromTableCommonQuery(
                                                 "staffDetailsTable", "");
 
-                                        Provider.of<Controller>(context,
+                                        // Provider.of<Controller>(context,
+                                        //         listen: false)
+                                        //     .getStaffDetails(
+                                        //         cid, 0, "company details");
+                                        // Provider.of<Controller>(context,
+                                        //         listen: false)
+                                        //     .getSettings(context, cid,
+                                        //         "company details");
+                                          Provider.of<Controller>(context,
                                                 listen: false)
-                                            .getStaffDetails(
-                                                cid, 0, "company details");
-                                        Provider.of<Controller>(context,
+                                            .getMasterData("staff", context, 0, "company details");
+                                                 Provider.of<Controller>(context,
                                                 listen: false)
-                                            .getSettings(context, cid,
-                                                "company details");
+                                            .getMasterData("settings", context, 0, "company details");
 
                                         Navigator.push(
                                           context,

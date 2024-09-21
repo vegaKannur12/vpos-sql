@@ -406,12 +406,16 @@ class StaffLogin extends StatelessWidget {
                                                     //         "");
 
                                                     print("staff cid----$cid");
-
                                                     Provider.of<Controller>(
                                                             context,
                                                             listen: false)
-                                                        .getStaffDetails(
-                                                            cid!, 0, "");
+                                                        .getMasterData("staff",
+                                                            context, 0, "");
+                                                    // Provider.of<Controller>(
+                                                    //         context,
+                                                    //         listen: false)
+                                                    //     .getStaffDetails(
+                                                    //         cid!, 0, "");
                                                   }
 
                                                   showDialog(
@@ -531,19 +535,19 @@ class StaffLogin extends StatelessWidget {
                   EdgeInsets.only(bottom: topInsets + size.height * 0.34),
               controller: controllerValue,
               decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                color: const Color.fromARGB(255, 199, 198, 198),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide(
-                                color: const Color.fromARGB(255, 199, 198, 198),
-                                width: 1.0,
-                              ),
-                            ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide(
+                      color: const Color.fromARGB(255, 199, 198, 198),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide(
+                      color: const Color.fromARGB(255, 199, 198, 198),
+                      width: 1.0,
+                    ),
+                  ),
                   prefixIcon: type == "password"
                       ? const Icon(Icons.password)
                       : const Icon(Icons.person),

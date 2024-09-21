@@ -186,17 +186,25 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                               }
                                               if (downloadItems[index] ==
                                                   "Area") {
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getAreaDetails(
+                                                //         cid!, index, "");
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getAreaDetails(
-                                                        cid!, index, "");
+                                                    .getMasterData("area",
+                                                        context, index, "");
                                               }
                                               if (downloadItems[index] ==
                                                   "Staff") {
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getStaffDetails(
-                                                        cid!, index, "");
+                                                    .getMasterData("staff",
+                                                        context, index, "");
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getStaffDetails(
+                                                //         cid!, index, "");
                                               }
                                               if (downloadItems[index] ==
                                                   "Product units") {

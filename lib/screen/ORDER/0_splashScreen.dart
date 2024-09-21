@@ -23,10 +23,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   String? cid;
-
   String? fp;
   bool? isautodownload;
-
   String? userType;
   String? firstMenu;
   String? versof;
@@ -34,9 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
   bool? staffLog;
   String? dataFile;
   String? os;
-
   String? tempFp1;
-
   ExternalDir externalDir = ExternalDir();
 
   navigate() async {
@@ -50,13 +46,16 @@ class _SplashScreenState extends State<SplashScreen>
               pageBuilder: (_, __, ___) {
                 print(
                     "data from file------------$temp----");
-                if (temp !=null) {
-                  return StaffLogin();
-                } 
-                else {
+                // if (temp !=null) 
+                // {
+                //   return StaffLogin();
+                // } 
+
+                // else 
+                // {
                   print("not valid user");
                   return NextPage();
-                }
+                // }
               }));
     });
   }

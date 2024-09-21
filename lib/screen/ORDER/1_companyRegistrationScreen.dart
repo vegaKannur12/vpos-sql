@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqlorder24/service/tableList.dart';
 
 import '../../components/commoncolor.dart';
 import '../../db_helper.dart';
@@ -101,6 +102,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
+        appBar: AppBar(actions: [
+           IconButton(
+              onPressed: () async {
+                List<Map<String, dynamic>> list =
+                    await OrderAppDB.instance.getListOfTables();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TableList(list: list)),
+                );
+              },
+              icon: Icon(Icons.table_bar),
+            ),
+        ],),
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         body: InkWell(

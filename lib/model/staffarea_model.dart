@@ -5,7 +5,7 @@ class StaffArea {
   StaffArea({this.aid, this.anme});
 
   StaffArea.fromJson(Map<String, dynamic> json) {
-    aid = json['aid'];
+    aid = json['aid'].toString();
     anme = json['anme'];
   }
 

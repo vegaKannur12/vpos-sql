@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqlorder24/screen/ORDER/1_companyRegistrationScreen.dart';
+import 'package:sqlorder24/screen/ORDER/externalDir.dart';
 import 'screen/ADMIN_/adminController.dart';
 /////////////registration keyyyyyyyyyyyyyyyyy
 ////demo -------   FR67RTMNSMSM  user----vega,pwd---vega
@@ -119,6 +120,7 @@ Future<void> main() async {
   var status = await Permission.storage.status;
 //  permission();
   requestPermission();
+
   // checkPerm();
   runApp(MultiProvider(
     providers: [
@@ -144,13 +146,13 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto Mono sample',
         visualDensity: VisualDensity.adaptivePlatformDensity,
         // fontFamily: 'OpenSans',
-        // primaryColor:Colors.white,     
+        // primaryColor:Colors.white,
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.indigo,
         ),
         textTheme: GoogleFonts.latoTextTheme(
           Theme.of(context).textTheme,
-        ),        
+        ),
         // scaffoldBackgroundColor: P_Settings.bodycolor,
         // textTheme: const TextTheme(
         //   headline1: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -162,10 +164,16 @@ class MyApp extends StatelessWidget {
         //   ),
         // ),
       ),
-      home: 
-          //  SplashScreen(),
-          NextPage(),
-          //  RegistrationScreen(),
+      home:
+          SplashScreen(),
+      //   NextPage(temp: {
+      //   "IP": "103.177.225.245",
+      //   "PORT": "54321",
+      //   "DB": "APP_REGISTER",
+      //   "USR": "sa",
+      //   "PWD": "##v0e3g9a#"
+      // }),
+      //  RegistrationScreen(),
       builder: EasyLoading.init(),
       // home: MyWaveClipper(),
     );

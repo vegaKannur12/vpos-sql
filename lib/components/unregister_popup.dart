@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:sqlorder24/screen/NEWPAGES/nextscreen.dart';
 import 'package:sqlorder24/screen/ORDER/1_companyRegistrationScreen.dart';
+import 'package:sqlorder24/screen/ORDER/externalDir.dart';
 
 class Unreg {
+  ExternalDir externalDir = ExternalDir();
   showAlertDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("Ok"),
-      onPressed: () {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => RegistrationScreen()));
+      child: Text("Yes"),
+      onPressed: () async {
+        // Map<String, dynamic>? temp = await externalDir.fileRead();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NextPage(
+              // temp: temp!,
+            ),
+          ),
+        );
       },
     );
     Widget cancelButton = TextButton(
-      child: Text("Cancel"),
+      child: Text("No"),
       onPressed: () {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => RegistrationScreen()));
+        Navigator.pop(context);
       },
     );
     // set up the AlertDialog

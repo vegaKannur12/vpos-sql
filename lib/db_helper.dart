@@ -57,6 +57,7 @@ class OrderAppDB {
   static final pwd = 'pwd';
   static final ph = 'ph';
   static final area = 'area';
+   static final track = 'track';
   static final datetime = 'datetime';
 
   // int DB_VERSION = 2;
@@ -328,11 +329,8 @@ class OrderAppDB {
             $sname TEXT,
             $uname TEXT,
             $pwd TEXT,
-            $ad1 TEXT,
-            $ad2 TEXT,
-            $ad3 TEXT,
-            $ph TEXT,
-            $area TEXT    
+            $area TEXT,
+            $track INTEGER    
           )
           ''');
     await db.execute('''
@@ -1266,7 +1264,7 @@ class OrderAppDB {
   Future insertStaffDetails(StaffDetails sdata) async {
     final db = await database;
     var query2 =
-        'INSERT INTO staffDetailsTable(sid, sname, uname, pwd, ad1, ad2, ad3, ph, area) VALUES("${sdata.sid}", "${sdata.sname}", "${sdata.unme}", "${sdata.pwd}", "${sdata.ad1}", "${sdata.ad2}", "${sdata.ad3}", "${sdata.ph}", "${sdata.area}")';
+        'INSERT INTO staffDetailsTable(sid, sname, uname, pwd,area,track) VALUES("${sdata.sid}", "${sdata.sname}", "${sdata.unme}", "${sdata.pwd}","${sdata.area}",${sdata.track})';
     var res = await db.rawInsert(query2);
     print(query2);
     // print(res);

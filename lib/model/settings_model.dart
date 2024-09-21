@@ -3,14 +3,12 @@ class SettingsModel {
   String? setCode;
   String? setValue;
   String? setType;
-
   SettingsModel({this.setId, this.setCode, this.setValue, this.setType});
-
   SettingsModel.fromJson(Map<String, dynamic> json) {
-    setId = json['set_id'];
+    setId = json['set_id'].toString();
     setCode = json['set_code'];
     setValue = json['set_value'];
-    setType = json['set_type'];
+    setType = json['set_type'].toString();
   }
 
   Map<String, dynamic> toJson() {
