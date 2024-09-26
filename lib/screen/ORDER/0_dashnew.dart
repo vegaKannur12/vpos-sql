@@ -97,7 +97,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     super.initState();
     // Provider.of<Controller>(context, listen: false).initSecondaryDb(context);
     Provider.of<Controller>(context, listen: false).fetchMenusFromMenuTable();
-
+    
+    // Provider.of<Controller>(context, listen: false).getMasterData("stock", context, 0, "");
     drawerOpts.clear();
     print(
         "menu from splash------${Provider.of<Controller>(context, listen: false).menu_index}");
@@ -158,6 +159,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   // }
 
   getCompaniId() async {
+    await Provider.of<Controller>(context, listen: false).initSecondaryDb(context);
+    await Provider.of<Controller>(context, listen: false).getMasterData("stock", context, 0, "");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     cid = prefs.getString("cid");
     os = prefs.getString("os");

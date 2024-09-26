@@ -21,6 +21,7 @@ import 'package:sqlorder24/model/productsCategory_model.dart';
 import 'package:sqlorder24/model/registration_model.dart';
 import 'package:sqlorder24/model/settings_model.dart';
 import 'package:sqlorder24/model/sideMenu_model.dart';
+import 'package:sqlorder24/model/stock_details_model.dart';
 import 'package:sqlorder24/model/userType_model.dart';
 import 'package:sqlorder24/model/verify_registrationModel.dart';
 import 'package:sqlorder24/model/wallet_model.dart';
@@ -661,7 +662,17 @@ class Controller extends ChangeNotifier {
                 await getMasterData("staff", context, 0, "");
                 await getMasterData("settings", context, 0, "");
                 await getMasterData("area", context, 0, "");
+                await getMasterData("stock", context, 0, "");
                 await getbranchlist(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CompanyDetails(
+                            type: "",
+                            msg: "",
+                            br_length: br_length,
+                          )),
+                );
               } else {
                 isLoading = false;
                 notifyListeners();
@@ -725,15 +736,15 @@ class Controller extends ChangeNotifier {
         brlen = branch_List.length;
       }
       notifyListeners();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CompanyDetails(
-                  type: "",
-                  msg: "",
-                  br_length: br_length,
-                )),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => CompanyDetails(
+      //             type: "",
+      //             msg: "",
+      //             br_length: br_length,
+      //           )),
+      // );
     } on PlatformException catch (e) {
       debugPrint("PlatformException brnch: ${e.message}");
       debugPrint("not connected..brnch..");
@@ -990,6 +1001,7 @@ class Controller extends ChangeNotifier {
 /////////////////////////////////MASTER DATA/////////////////////////
   getMasterData(
       String datavalue, BuildContext context, int index, String page) async {
+    // await initSecondaryDb(context);
     var res;
     DateTime date = DateTime.now();
     List s = [];
@@ -1176,6 +1188,24 @@ class Controller extends ChangeNotifier {
           productUnits = ProductUnitsModel.fromJson(prounit);
           var product =
               await OrderAppDB.instance.insertProductUnit(productUnits);
+        }
+        isDownloaded = false;
+        isDown[index] = true;
+        isLoading = false;
+        notifyListeners();
+      } else if (datavalue == "stock") {
+        print("stock Map --- ${map}");
+
+        await OrderAppDB.instance
+            .deleteFromTableCommonQuery('stockDetailsTable', "");
+        StockDetails stk;
+        for (var stok in map) {
+          print(
+              "stockdata---${stok["bid"].runtimeType},${stok["stock"].runtimeType} ");
+          print("stock----${stok.length}");
+          stk = StockDetails.fromJson(stok);
+          var stkkdet = await OrderAppDB.instance.insertStockDetails(stk);
+          print("inserted stock ${stkkdet}");
         }
         isDownloaded = false;
         isDown[index] = true;

@@ -38,10 +38,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     // TODO: implement initState
     super.initState();
     getCid();
-     print("br length--${widget.br_length.toString()}");
+    print("br length--${widget.br_length.toString()}");
     // if (widget.type == " ") {
     if (widget.br_length! > 0) {
-     
       //  Future(buildPopupDialog(context));
       SchedulerBinding.instance.addPostFrameCallback((_) {
         buildPopupDialog(context);
@@ -431,7 +430,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                                           "compny deatils userType----$userType");
 
                                       firstMenu = prefs.getString("firstMenu");
-                                      
+
                                       print("first---------$firstMenu");
                                       if (firstMenu != null) {
                                         Provider.of<Controller>(context,
@@ -448,15 +447,17 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                                       //         listen: false)
                                       //     .getAreaDetails(
                                       //         cid!, 0, "company details");
-                                                 Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("area", context, 0, "company details");
+                                      Provider.of<Controller>(context,
+                                              listen: false)
+                                          .getMasterData("area", context, 0,
+                                              "company details");
 
                                       Provider.of<Controller>(context,
                                               listen: false)
                                           .cid = cid;
 
-                                      print("cid-----${cid}, brid-------$brrid");
+                                      print(
+                                          "cid-----${cid}, brid-------$brrid");
                                       if (userType == "staff") {
                                         print("stffjknkdf");
 
@@ -472,12 +473,22 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                                         //         listen: false)
                                         //     .getSettings(context, cid,
                                         //         "company details");
-                                          Provider.of<Controller>(context,
+                                        Provider.of<Controller>(context,
                                                 listen: false)
-                                            .getMasterData("staff", context, 0, "company details");
-                                                 Provider.of<Controller>(context,
+                                            .getMasterData("staff", context, 0,
+                                                "company details");
+                                        Provider.of<Controller>(context,
                                                 listen: false)
-                                            .getMasterData("settings", context, 0, "company details");
+                                            .getMasterData("settings", context,
+                                                0, "company details");
+                                        Provider.of<Controller>(context,
+                                                listen: false)
+                                            .getMasterData(
+                                                "area", context, 0, "company details");
+                                        Provider.of<Controller>(context,
+                                                listen: false)
+                                            .getMasterData(
+                                                "stock", context, 0, "company details");
 
                                         Navigator.push(
                                           context,
@@ -485,8 +496,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                                               builder: (context) =>
                                                   StaffLogin()),
                                         );
-                                      } 
-                                      else if (userType == "admin") {
+                                      } else if (userType == "admin") {
                                         print("adminjknkdf");
                                         await OrderAppDB.instance
                                             .deleteFromTableCommonQuery(
@@ -586,7 +596,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                             //     .todayCollection(s[0], gen_condition!);
                             // Provider.of<Controller>(context, listen: false)
                             //     .todaySales(s[0], gen_condition!, "");
-                           await Provider.of<Controller>(context, listen: false)
+                            await Provider.of<Controller>(context,
+                                    listen: false)
                                 .setDropdowndata(selected!, context);
                             Navigator.pop(context);
 

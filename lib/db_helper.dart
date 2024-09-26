@@ -8,6 +8,7 @@ import 'package:sqlorder24/model/productUnitsModel.dart';
 import 'package:sqlorder24/model/productdetails_model.dart';
 import 'package:sqlorder24/model/productsCategory_model.dart';
 import 'package:sqlorder24/model/settings_model.dart';
+import 'package:sqlorder24/model/stock_details_model.dart';
 import 'package:sqlorder24/model/userType_model.dart';
 import 'package:sqlorder24/model/wallet_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -174,6 +175,9 @@ class OrderAppDB {
 /////////wallet table//////////////////
   static final waid = 'waid';
   static final wname = 'wname';
+  /////////stock table//////////////////
+  static final ppid = 'ppid';
+  static final pstock = 'pstock';
 ////////////collection table///////////////
   static final rec_date = 'rec_date';
   static final rec_cusid = 'rec_cusid';
@@ -359,6 +363,13 @@ class OrderAppDB {
             $id INTEGER PRIMARY KEY AUTOINCREMENT,
             $aid TEXT NOT NULL,
             $aname TEXT
+          )
+          ''');
+    await db.execute('''
+          CREATE TABLE stockDetailsTable (
+            $id INTEGER PRIMARY KEY AUTOINCREMENT,
+            $ppid TEXT,
+            $pstock TEXT
           )
           ''');
     await db.execute('''
@@ -1309,6 +1320,17 @@ class OrderAppDB {
     final db = await database;
     var query3 =
         'INSERT INTO areaDetailsTable(aid, aname) VALUES("${adata.aid}", "${adata.anme}")';
+    var res = await db.rawInsert(query3);
+    print(query3);
+    print(res);
+    return res;
+  }
+
+///////////////////////////////////////stock details/////////////////////////////////////
+  Future insertStockDetails(StockDetails sdata) async {
+    final db = await database;
+    var query3 =
+        'INSERT INTO stockDetailsTable(ppid,pstock) VALUES(${sdata.ppid},"${sdata.pstock}")';
     var res = await db.rawInsert(query3);
     print(query3);
     print(res);
@@ -2670,7 +2692,8 @@ class OrderAppDB {
     print("result upload----$result");
     return result;
   }
- selectMasterTableByID(int oidd) async {
+
+  selectMasterTableByID(int oidd) async {
     Database db = await instance.database;
     var result;
     var res = await db.rawQuery("SELECT  * FROM  orderMasterTable");
@@ -2711,7 +2734,7 @@ class OrderAppDB {
         " salesMasterTable.cancel_staff as cancel_staff, " +
         " salesMasterTable.cancel_dateTime as cancel_time," +
         "salesMasterTable.brrid || ' ' as brid" +
-            " FROM salesMasterTable where salesMasterTable.status=0 ;";
+        " FROM salesMasterTable where salesMasterTable.status=0 ;";
     var res = await db.rawQuery("SELECT  * FROM  salesMasterTable");
     print("query2----$query2");
     if (res.length > 0) {
@@ -2720,7 +2743,8 @@ class OrderAppDB {
     print("result sales upload----$result");
     return result;
   }
- selectSalesMasterTableByID(int sidd) async {
+
+  selectSalesMasterTableByID(int sidd) async {
     Database db = await instance.database;
     var result;
 
@@ -2746,7 +2770,7 @@ class OrderAppDB {
         " salesMasterTable.cancel as cancel_flag, " +
         " salesMasterTable.cancel_staff as cancel_staff, " +
         " salesMasterTable.cancel_dateTime as cancel_time," +
-        "salesMasterTable.brrid || ' ' as brid" 
+        "salesMasterTable.brrid || ' ' as brid"
             " FROM salesMasterTable where salesMasterTable.sales_id=$sidd ;";
     var res = await db.rawQuery("SELECT  * FROM  salesMasterTable");
     print("by sid----$query2");
@@ -2756,6 +2780,7 @@ class OrderAppDB {
     print("by sid result sales upload----$result");
     return result;
   }
+
   ////////////////////////////////////////////////////////
   selectReturnMasterTable() async {
     Database db = await instance.database;
