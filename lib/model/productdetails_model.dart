@@ -1,7 +1,6 @@
 class ProductDetails {
   String? code;
-  String? pid;
-
+  int? pid;
   String? ean;
   String? item;
   String? unit;
@@ -40,24 +39,24 @@ class ProductDetails {
       this.priceFlag});
 
   ProductDetails.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
+    code = json['code'].toString().trimLeft();
     pid = json['pid'];
-    ean = json['ean'];
-    item = json['item'];
-    unit = json['unit'];
-    categoryId = json['category_id'];
-    companyId = json['company_id'];
-    stock = json['stock'];
-    hsn = json['hsn'];
-    tax = json['tax'];
-    prate = json['prate'];
-    mrp = json['mrp'];
-    cost = json['cost'];
-    rate1 = json['rate1'];
-    rate2 = json['rate2'];
-    rate3 = json['rate3'];
-    rate4 = json['rate4'];
-    priceFlag = json['price_flag'];
+    ean = json['ean'].toString().trimLeft();
+    item = json['item'].toString().trimLeft();
+    unit = json['unit'].toString().trimLeft();
+    categoryId = json['category_id'].toString().trimLeft();
+    companyId = json['company_id'].toString().trimLeft();
+    stock = json['stock'].toString().trimLeft();
+    hsn = json['hsn'].toString().trimLeft();
+    tax = json['tax'].toString().trimLeft();
+    prate = json['prate'].toString().trimLeft();
+    mrp = json['mrp'].toString().trimLeft();
+    cost = json['cost'].toString().trimLeft();
+    rate1 = json['rate1'].toString().trimLeft();
+    rate2 = json['rate2'].toString().trimLeft();
+    rate3 = json['rate3'].toString().trimLeft();
+    rate4 = json['rate4'].toString().trimLeft();
+    priceFlag = json['price_flag'].toString().trimLeft();
   }
 
   Map<String, dynamic> toJson() {

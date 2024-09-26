@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sqlorder24/service/tableList.dart';
 
 class MainDashboard extends StatefulWidget {
   BuildContext context;
@@ -112,12 +113,22 @@ class _MainDashboardState extends State<MainDashboard> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.black,
-                                radius: 15,
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.yellow,
+                              InkWell(onLongPress: () async {
+                                 List<Map<String, dynamic>> list =
+                                await OrderAppDB.instance.getListOfTables();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TableList(list: list)),
+                            );
+                              },
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.black,
+                                  radius: 15,
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.yellow,
+                                  ),
                                 ),
                               ),
                               Padding(
@@ -583,6 +594,7 @@ class _MainDashboardState extends State<MainDashboard> {
                                 Provider.of<Controller>(context, listen: false)
                                     .areaidFrompopup;
                             if (genArea != null) {
+                              print("gEN AREA ----$genArea");
                               gen_condition =
                                   " and accountHeadsTable.area_id=$genArea";
                             } else {

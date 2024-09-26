@@ -71,6 +71,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
   String? sid;
   String? os;
   String? cid;
+  String? brid;
   bool areavisible = false;
   bool visible = false;
   String itemName = '';
@@ -87,6 +88,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
   String? _selectedAreaId;
   DateTime now = DateTime.now();
   String? date;
+  String? branch_id;
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -133,7 +135,14 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
     sid = prefs.getString('sid');
     os = prefs.getString("os");
     cid = prefs.getString("cid");
-    print("company Id ......$cid");
+    brid = prefs.getString("br_id");
+
+    if (brid == null || brid == " " || brid == "null") {
+      branch_id = " ";
+    } else {
+      branch_id = brid!;
+    }
+    print("company Id ...Branch Id...$cid---$branch_id");
 
     print("sid--os-$sid--$os");
     // Provider.of<Controller>(context, listen: false).getArea(sid!);
@@ -962,7 +971,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                           listen:
                                                                               false)
                                                                       .areaSelecton!,
-                                                              type: "return",
+                                                              type: "return",branch_id: branch_id.toString(),
                                                             ),
                                                           ),
                                                         );
@@ -1042,7 +1051,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                             context,
                                                                             listen:
                                                                                 false)
-                                                                        .areaId),
+                                                                        .areaId,branch_id: branch_id.toString(),),
                                                               ),
                                                             );
                                                           }
@@ -1141,7 +1150,8 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                             "ac_code='$custmerId'");
                                                                 print(
                                                                     "customerDet------$customerDet");
-                                                                String os = "S"
+                                                                String os = 
+                                                                // "S"
                                                                     "${values.ordernum[0]["os"]}";
 
                                                                 Provider.of<Controller>(
@@ -1213,7 +1223,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                                 .areaSelecton!,
                                                                         type:
                                                                             "sale",
-                                                                        gtype: customerDet[0]["gtype"]),
+                                                                        gtype: customerDet[0]["gtype"],branch_id: branch_id.toString()),
                                                                   ),
                                                                 );
                                                               }
@@ -1242,7 +1252,8 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                 fontSize: 14),
                                                           ),
                                                           onPressed: () async {
-                                                            String oos = "O"
+                                                            String oos = 
+                                                            // "O"
                                                                 "${values.ordernum[0]['os']}";
                                                             FocusScopeNode
                                                                 currentFocus =
@@ -1310,6 +1321,9 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                   opaque:
                                                                       false, // set to false
                                                                   pageBuilder: (_, __, ___) => X001OrderItemSelection(
+                                                                      branch_id:
+                                                                          branch_id
+                                                                              .toString(),
                                                                       customerId:
                                                                           custmerId
                                                                               .toString(),
@@ -1352,28 +1366,28 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                 SizedBox(
                                   height: size.height * 0.01,
                                 ),
-                                values.balanceLoading
-                                    ? SpinKitThreeBounce(
-                                        color: Colors.blue,
-                                        size: 15,
-                                      )
-                                    : values.balance == null
-                                        ? Container()
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text("Outstandng : "),
-                                              Text(
-                                                values.balance!
-                                                    .toStringAsFixed(2),
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.green),
-                                              ),
-                                            ],
-                                          ),
+                                // values.balanceLoading
+                                //     ? SpinKitThreeBounce(
+                                //         color: Colors.blue,
+                                //         size: 15,
+                                //       )
+                                //     : values.balance == null
+                                //         ? Container()
+                                //         : Row(
+                                //             mainAxisAlignment:
+                                //                 MainAxisAlignment.center,
+                                //             children: [
+                                //               Text("Outstandng : "),
+                                //               Text(
+                                //                 values.balance!
+                                //                     .toStringAsFixed(2),
+                                //                 style: TextStyle(
+                                //                     fontSize: 20,
+                                //                     fontWeight: FontWeight.bold,
+                                //                     color: Colors.green),
+                                //               ),
+                                //             ],
+                                //           ),
                               ],
                             ),
                           ),

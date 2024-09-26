@@ -5,8 +5,8 @@ class ProductCompanymodel {
   ProductCompanymodel({this.comid, this.comanme});
 
   ProductCompanymodel.fromJson(Map<String, dynamic> json) {
-    comid = json['comid'];
-    comanme = json['comanme'];
+    comid = json['comid'].toString().trimLeft();
+    comanme = json['comanme'].toString().trimLeft();
   }
 
   Map<String, dynamic> toJson() {

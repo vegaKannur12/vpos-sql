@@ -5,8 +5,8 @@ class ProductsCategoryModel {
   ProductsCategoryModel({this.cid, this.canme});
 
   ProductsCategoryModel.fromJson(Map<String, dynamic> json) {
-    cid = json['cid'];
-    canme = json['canme'];
+    cid = json['cid'].toString().trimLeft();
+    canme = json['canme'].trimLeft();
   }
 
   Map<String, dynamic> toJson() {

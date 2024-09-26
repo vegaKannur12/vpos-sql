@@ -16,6 +16,7 @@ class FilteredProduct extends StatefulWidget {
   List<String>? s;
   String? customerId;
   String? value;
+  String? branch_id;
 
   FilteredProduct({
     required this.type,
@@ -23,6 +24,7 @@ class FilteredProduct extends StatefulWidget {
     this.os,
     this.s,
     this.value,
+    this.branch_id
   });
 
   @override

@@ -190,6 +190,9 @@ class StaffLogin extends StatelessWidget {
                                               ),
                                             ),
                                             onPressed: () async {
+                                              Provider.of<Controller>(
+                                                            context,
+                                                            listen: false).initSecondaryDb(context);
                                               result.clear();
                                               SharedPreferences prefs =
                                                   await SharedPreferences

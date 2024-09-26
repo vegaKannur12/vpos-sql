@@ -35,22 +35,22 @@ class AccountHead {
       this.cag});
 
   AccountHead.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-    hname = json['hname'];
-    gtype = json['gtype'];
-    ad1 = json['ad1'];
-    ad2 = json['ad2'];
-    ad3 = json['ad3'];
-    aid = json['aid'];
-    ph = json['ph'];
-    ba = json['ba'];
-    ri = json['ri'];
-    rc = json['rc'];
-    ht = json['ht'];
-    mo = json['mo'];
-    gst = json['gst'];
-    ac = json['ac'];
-    cag = json['cag'];
+    code = json['code'].toString().trimLeft();
+    hname = json['hname'].toString().trimLeft();
+    gtype = json['gtype'].toString().trimLeft();
+    ad1 = json['ad1'].toString().trimLeft();
+    ad2 = json['ad2'].toString().trimLeft();
+    ad3 = json['ad3'].toString().trimLeft();
+    aid = json['area_id'].toString().trimLeft();
+    ph = json['ph'].toString().trimLeft();
+    ba = json['ba'].toString().trimLeft();
+    ri = json['ri'].toString().trimLeft();
+    rc = json['rc'].toString().trimLeft();
+    ht = json['ht'].toString().trimLeft();
+    mo = json['mo'].toString().trimLeft();
+    gst = json['gst'].toString().trimLeft();
+    ac = json['ac'].toString().trimLeft();
+    cag = json['cag'].toString().trimLeft();
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +61,7 @@ class AccountHead {
     data['ad1'] = this.ad1;
     data['ad2'] = this.ad2;
     data['ad3'] = this.ad3;
-    data['aid'] = this.aid;
+    data['area_id'] = this.aid;
     data['ph'] = this.ph;
     data['ba'] = this.ba;
     data['ri'] = this.ri;

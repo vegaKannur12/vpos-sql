@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/commoncolor.dart';
 
 class X001OrderItemSelection extends StatefulWidget {
+  String branch_id;
   String customerId;
   String os;
   String areaId;
@@ -27,6 +28,7 @@ class X001OrderItemSelection extends StatefulWidget {
   bool _isLoading = false;
 
   X001OrderItemSelection({
+    required this.branch_id,
     required this.customerId,
     required this.areaId,
     required this.os,
@@ -107,7 +109,7 @@ class _X001OrderItemSelectionState extends State<X001OrderItemSelection> {
                                   "set_code in ('SL_RATE_EDIT','SL_TAX_CALC','SL_UPLOAD_DIRECT') ");
 
                           Provider.of<Controller>(context, listen: false)
-                              .getBagDetails(widget.customerId, widget.os);
+                              .getBagDetails(widget.customerId, widget.os,);
 
                           Navigator.of(context).push(
                             PageRouteBuilder(
@@ -118,6 +120,7 @@ class _X001OrderItemSelectionState extends State<X001OrderItemSelection> {
                                 os: widget.os,
                                 areaname: widget.areaName,
                                 type: widget.type,
+                                branch_id: widget.branch_id,
                               ),
                             ),
                           );
@@ -300,7 +303,7 @@ class _X001OrderItemSelectionState extends State<X001OrderItemSelection> {
                                                       .filteredeValue!,
                                                   "sale order",
                                                   value.orderitemList2,
-                                                  "sale order",context)
+                                                  "sale order",context,widget.branch_id)
                                           : Provider.of<Controller>(context,
                                                   listen: false)
                                               .searchProcess_X001(
@@ -309,7 +312,7 @@ class _X001OrderItemSelectionState extends State<X001OrderItemSelection> {
                                                   "",
                                                   "sale order",
                                                   value.orderitemList2,
-                                                  "sale order",context);
+                                                  "sale order",context,widget.branch_id);
                                     }),
                                 IconButton(
                                     icon: Icon(
@@ -480,7 +483,7 @@ class _X001OrderItemSelectionState extends State<X001OrderItemSelection> {
                                                           widget.customerId,
                                                           widget.os,
                                                           s[0],
-                                                          s[1],
+                                                          s[1],widget.branch_id
                                                         );
                                                       }
                                                     },
@@ -561,7 +564,7 @@ class _X001OrderItemSelectionState extends State<X001OrderItemSelection> {
                                       s: s,
                                       value: Provider.of<Controller>(context,
                                               listen: false)
-                                          .filteredeValue,
+                                          .filteredeValue,branch_id: widget.branch_id,
                                     )
                                   : value.isLoading
                                       ? CircularProgressIndicator()
@@ -673,7 +676,7 @@ class _X001OrderItemSelectionState extends State<X001OrderItemSelection> {
                                                           widget.customerId,
                                                           widget.os,
                                                           s[0],
-                                                          s[1],
+                                                          s[1],widget.branch_id
                                                         );
                                                       }
                                                     },

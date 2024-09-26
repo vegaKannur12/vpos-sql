@@ -8,7 +8,9 @@ import 'package:sqlorder24/screen/ORDER/externalDir.dart';
 
 class NextPage extends StatefulWidget {
   // final Map<String, dynamic> temp;
-  const NextPage({super.key,});
+  const NextPage({
+    super.key,
+  });
   @override
   State<NextPage> createState() => _NextPageState();
 }
@@ -33,7 +35,7 @@ class _NextPageState extends State<NextPage> {
             ),
             Container(
                 height: 200,
-                width: 200,
+                width: size.width * 0.9,
                 child: Center(
                     child: Column(
                   children: [
@@ -197,6 +199,9 @@ class _NextPageState extends State<NextPage> {
                             fontWeight: FontWeight.bold),
                       ),
                     ),
+                    SizedBox(
+                      height: size.height * 0.02,
+                    ),
                     Text(
                       "Click NEXT to Register",
                       style: TextStyle(
@@ -208,7 +213,7 @@ class _NextPageState extends State<NextPage> {
                       padding:
                           const EdgeInsets.only(top: 40, left: 17.0, right: 17),
                       child: SizedBox(
-                        height: size.height * 0.06,
+                        height: size.height * 0.06,width: size.width*1/2,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -218,11 +223,9 @@ class _NextPageState extends State<NextPage> {
                             ),
                           ),
                           onPressed: () async {
-                            Map<String, dynamic>? temp =
-                                await externalDir.fileRead();
                             await Provider.of<Controller>(context,
                                     listen: false)
-                                .initPrimaryDb(context, temp!);
+                                .initPrimaryDb(context);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,

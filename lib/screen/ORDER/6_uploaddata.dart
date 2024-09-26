@@ -16,11 +16,12 @@ class Uploaddata extends StatefulWidget {
 class _UploaddataState extends State<Uploaddata> {
   // String? cid;
   List<String> uploadItems = [
-    // "Upload Orders",
+    "Upload Orders",
     "Upload Sales",
     // "Upload Customer",
     // "Upload Stock Return",
     "Upload Collection",
+    "Upload Stock"
     // "Upload Remarks"
   ];
   @override
@@ -86,16 +87,16 @@ class _UploaddataState extends State<Uploaddata> {
                                       : value.isUp[index]
                                           ? null
                                           : () async {
-                                              // if (uploadItems[index] ==
-                                              //     "Upload Orders") {
-                                              //   Provider.of<Controller>(context,
-                                              //           listen: false)
-                                              //       .uploadOrdersData(
-                                              //           widget.cid,
-                                              //           context,
-                                              //           index,
-                                              //           "upload page");
-                                              // }
+                                              if (uploadItems[index] ==
+                                                  "Upload Orders") {
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .uploadOrdersDataSQL(
+                                                        widget.cid,
+                                                        context,
+                                                        index,
+                                                        "upload page");
+                                              }
                                               // if (uploadItems[index] ==
                                               //     "Upload Stock Return") {
                                               //   Provider.of<Controller>(context,
@@ -110,7 +111,7 @@ class _UploaddataState extends State<Uploaddata> {
                                                   "Upload Sales") {
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .uploadSalesData(
+                                                    .uploadSalesDatasql(
                                                         widget.cid,
                                                         context,
                                                         index,
@@ -128,10 +129,20 @@ class _UploaddataState extends State<Uploaddata> {
                                                   "Upload Collection") {
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .uploadCollectionData(
+                                                    .uploadCollectionDataSQL(
                                                         context,
                                                         index,
                                                         "upload page");
+                                                //     .getProductCategory(cid!, "");
+                                              }
+                                              if (uploadItems[index] ==
+                                                  "Upload Stock") {
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .uploadCollectionData(
+                                                //         context,
+                                                //         index,
+                                                //         "upload page");
                                                 //     .getProductCategory(cid!, "");
                                               }
                                               // if (uploadItems[index] ==

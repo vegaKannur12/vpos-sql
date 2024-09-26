@@ -19,6 +19,7 @@ class CartList extends StatefulWidget {
   String areaId;
   String areaname;
   String type;
+  String branch_id;
 
   CartList({
     required this.areaId,
@@ -26,6 +27,7 @@ class CartList extends StatefulWidget {
     required this.os,
     required this.areaname,
     required this.type,
+    required this.branch_id
   });
   @override
   State<CartList> createState() => _CartListState();
@@ -237,7 +239,8 @@ class _CartListState extends State<CartList> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: (() async {
+                              onTap: (() async 
+                              {
                                 // value.areDetails.clear();
                                 showDialog(
                                   context: context,
@@ -254,6 +257,7 @@ class _CartListState extends State<CartList> {
                                     "",
                                     "",
                                     "",
+                                    widget.branch_id
                                   ),
                                 );
 

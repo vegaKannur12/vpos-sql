@@ -18,7 +18,8 @@ class CollectionPage extends StatefulWidget {
   String? sid;
   String? cuid;
   String? aid;
-  CollectionPage({this.os, this.sid, this.cuid, this.aid});
+  String? branch_id;
+  CollectionPage({this.os, this.sid, this.cuid, this.aid, this.branch_id});
 
   @override
   State<CollectionPage> createState() => _CollectionPageState();
@@ -214,7 +215,7 @@ class _CollectionPageState extends State<CollectionPage> {
                           SizedBox(
                             height: size.height * 0.01,
                           ),
-                           Text("Outstanding",
+                          Text("Outstanding",
                               style: TextStyle(
                                 fontSize: 15,
                               )),
@@ -315,7 +316,8 @@ class _CollectionPageState extends State<CollectionPage> {
                               height: size.height * 0.05,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  String os1 = "C" + "${widget.os}";
+                                  String os1 = "${widget.os}";
+                                  // String os1 = "C" + "${widget.os}";
                                   int max = await OrderAppDB.instance
                                       .calculateMaxSeries('$os1',
                                           'collectionTable', 'rec_row_num');
@@ -351,7 +353,8 @@ class _CollectionPageState extends State<CollectionPage> {
                                             0,
                                             0,
                                             "",
-                                            "");
+                                            "",
+                                            widget.branch_id.toString());
 
                                     amtController.clear();
                                     dscController.clear();
@@ -361,15 +364,18 @@ class _CollectionPageState extends State<CollectionPage> {
                                             listen: false)
                                         .fetchtotalcollectionFromTable(
                                             widget.cuid!);
-
+print("setting list--${Provider.of<Controller>(context,
+                                                listen: false)
+                                            .settingsList1}");
                                     if (Provider.of<Controller>(context,
                                                 listen: false)
                                             .settingsList1[0]["set_value"] ==
-                                        "YES") {
+                                        "YES") 
+                                    {
                                       print("upload----");
                                       Provider.of<Controller>(context,
                                               listen: false)
-                                          .uploadCollectionData(
+                                          .uploadCollectionDataSQL(
                                               context, 0, "comomn popup");
                                     }
                                     print(
@@ -442,7 +448,7 @@ class _CollectionPageState extends State<CollectionPage> {
                               builder: (context, value, child) {
                                 return Container(
                                   // color: P_Settings.collection,
-                                  height: size.height * 0.7,
+                                  height: size.height * 0.9,
                                   child: ListView.builder(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
@@ -480,7 +486,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                                     value.fetchcollectionList[
                                                         index]['rec_date'],
                                                     style:
-                                                        TextStyle(fontSize: 15),
+                                                        TextStyle(fontSize: 13),
                                                   ),
                                                   Text(
                                                     value.fetchcollectionList[

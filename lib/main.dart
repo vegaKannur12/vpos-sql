@@ -11,6 +11,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqlorder24/screen/ORDER/1_companyRegistrationScreen.dart';
+import 'package:sqlorder24/screen/ORDER/6_downloadedPage.dart';
+import 'package:sqlorder24/screen/ORDER/6_uploaddata.dart';
 import 'package:sqlorder24/screen/ORDER/externalDir.dart';
 import 'screen/ADMIN_/adminController.dart';
 /////////////registration keyyyyyyyyyyyyyyyyy
@@ -165,14 +167,27 @@ class MyApp extends StatelessWidget {
         // ),
       ),
       home:
-          SplashScreen(),
-      //   NextPage(temp: {
+// DownloadedPage(
+//             title: "Download Page",
+//             type: "drawer call",
+//             context: context,
+//           ),
+      //     Uploaddata(
+      //   title: "Upload data",
+      //   cid: "VC1001",
+      //   type: "drawer call",
+      // ),
+      SplashScreen(),
+      // NextPage(),
+      // NextPage(
+      //     temp: {
       //   "IP": "103.177.225.245",
       //   "PORT": "54321",
       //   "DB": "APP_REGISTER",
       //   "USR": "sa",
       //   "PWD": "##v0e3g9a#"
-      // }),
+      // }
+      // ),
       //  RegistrationScreen(),
       builder: EasyLoading.init(),
       // home: MyWaveClipper(),

@@ -23,6 +23,7 @@ class OrderBottomSheet {
     String os,
     String date,
     String time,
+    String branch_id,
   ) async {
     return showModalBottomSheet(
         isScrollControlled: true,
@@ -441,7 +442,7 @@ class OrderBottomSheet {
                                                     value.selectedItem,
                                                     value.package!,
                                                     baseRate,
-                                                    0);
+                                                    0,branch_id);
                                             Fluttertoast.showToast(
                                               msg:
                                                   "$item Inserted Successfully",

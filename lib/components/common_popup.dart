@@ -27,6 +27,7 @@ class CommonPopup {
     String ref,
     String reason,
     String payment_mode,
+    String branch_id
     // double baserate,
   ) {
     Timer? _timer;
@@ -113,6 +114,7 @@ class CommonPopup {
                         areaid,
                         double.parse(value.orderTotal1!),
                         context,
+                        branch_id
                       );
                     }
 
@@ -189,7 +191,7 @@ class CommonPopup {
                                   payment_mode,
                                   value.roundoff,
                                   "",
-                                  "");
+                                  "",branch_id);
                     }
 
                     Provider.of<Controller>(context, listen: false)

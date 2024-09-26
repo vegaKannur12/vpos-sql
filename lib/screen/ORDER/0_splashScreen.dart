@@ -32,41 +32,73 @@ class _SplashScreenState extends State<SplashScreen>
   bool? staffLog;
   String? dataFile;
   String? os;
+  String? st_uname;
+  String? st_pwd;
+  String? com_cid;
   String? tempFp1;
   ExternalDir externalDir = ExternalDir();
 
   navigate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cid = prefs.getString("company_id");
+    os = prefs.getString("os");
+    userType = prefs.getString("user_type");
+    st_uname = prefs.getString("st_username");
+    versof = prefs.getString("versof");
+    st_pwd = prefs.getString("st_pwd");
+    firstMenu = prefs.getString("firstMenu");
+    com_cid = prefs.getString("cid");
+    isautodownload = prefs.getBool("isautodownload");
+    continueClicked = prefs.getBool("continueClicked");
+    staffLog = prefs.getBool("staffLog");
+    print("st-----$st_uname---$st_pwd");
+    print("continueClicked..........$staffLog......$continueClicked");
+
+    if (cid != null) {
+      Provider.of<Controller>(context, listen: false).cid = cid;
+    }
+    if (firstMenu != null) {
+      Provider.of<Controller>(context, listen: false).menu_index = firstMenu;
+
+      print(
+          "menu index from splash----->${Provider.of<Controller>(context, listen: false).menu_index}");
+    }
+
     Map<String, dynamic>? temp = await externalDir.fileRead();
+
     await Future.delayed(Duration(seconds: 3), () async {
-      print("stored db details${temp}");
+      print("stored db details--->${temp}");
       Navigator.push(
           context,
           PageRouteBuilder(
               opaque: false, // set to false
               pageBuilder: (_, __, ___) {
-                print(
-                    "data from file------------$temp----");
-                // if (temp !=null) 
-                // {
-                //   return StaffLogin();
-                // } 
-
-                // else 
-                // {
+                print("data from file------------$temp----");
+                if (temp != null && temp.isNotEmpty && temp != {} && cid!=null) {
+                  if (st_uname != null &&
+                      st_pwd != null &&
+                      staffLog != null &&
+                      staffLog!) {
+                    return Dashboard();
+                  } else {
+                    return StaffLogin();
+                  }
+                  // return Dashboard();
+                  // // StaffLogin();
+                } else {
                   print("not valid user");
                   return NextPage();
-                // }
+                }
               }));
     });
   }
-
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    
-    Provider.of<Controller>(context, listen: false).getfilefromStorage();
+
+    // Provider.of<Controller>(context, listen: false).getfilefromStorage();
     navigate();
   }
 

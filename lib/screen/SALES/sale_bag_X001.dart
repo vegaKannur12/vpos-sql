@@ -14,13 +14,14 @@ class SaleCartX001 extends StatefulWidget {
   String areaId;
   String areaname;
   String type;
-  SaleCartX001({
-    required this.areaId,
-    required this.custmerId,
-    required this.os,
-    required this.areaname,
-    required this.type,
-  });
+  String branch_id;
+  SaleCartX001(
+      {required this.areaId,
+      required this.custmerId,
+      required this.os,
+      required this.areaname,
+      required this.type,
+      required this.branch_id});
 
   @override
   State<SaleCartX001> createState() => _SaleCartX001State();
@@ -64,11 +65,13 @@ class _SaleCartX001State extends State<SaleCartX001> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List<dynamic> salebagReturnList =
-        Provider.of<Controller>(context, listen: false)
-            .salebagList
-            .where((salee) => salee["qty"] < "0.0")
-            .toList();
+    List<dynamic> salebagReturnList = Provider.of<Controller>(context,
+            listen: false)
+        .salebagList
+        .where(
+            (salee) => double.parse(salee["qty"]) < 0.0) // salee["qty"]< "0.0"
+
+        .toList();
     print("Return List===$salebagReturnList");
     return Scaffold(
       appBar: AppBar(
@@ -262,7 +265,8 @@ class _SaleCartX001State extends State<SaleCartX001> {
                                         s[1],
                                         " ",
                                         " ",
-                                        value.orderTotal2[11]);
+                                        value.orderTotal2[11],
+                                        widget.branch_id);
                                   }
 
                                   Provider.of<Controller>(context,
@@ -373,7 +377,8 @@ class _SaleCartX001State extends State<SaleCartX001> {
                       widget.custmerId,
                       widget.os,
                       pkg,
-                      unit_name);
+                      unit_name,
+                      widget.branch_id);
                 },
                 // leading: CircleAvatar(backgroundColor: Colors.green),
                 title: Column(
@@ -644,7 +649,8 @@ class _SaleCartX001State extends State<SaleCartX001> {
                                                             "",
                                                             context,
                                                             "",
-                                                            "");
+                                                            "",
+                                                            widget.branch_id);
                                                     Provider.of<Controller>(
                                                             context,
                                                             listen: false)

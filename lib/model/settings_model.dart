@@ -5,10 +5,10 @@ class SettingsModel {
   String? setType;
   SettingsModel({this.setId, this.setCode, this.setValue, this.setType});
   SettingsModel.fromJson(Map<String, dynamic> json) {
-    setId = json['set_id'].toString();
-    setCode = json['set_code'];
-    setValue = json['set_value'];
-    setType = json['set_type'].toString();
+    setId = json['set_id'].toString().trimLeft();
+    setCode = json['set_code'].toString().trimLeft();
+    setValue = json['set_value'].toString().trimLeft();
+    setType = json['set_type'].toString().trimLeft();
   }
 
   Map<String, dynamic> toJson() {

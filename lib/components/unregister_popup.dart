@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqlorder24/screen/NEWPAGES/nextscreen.dart';
 import 'package:sqlorder24/screen/ORDER/1_companyRegistrationScreen.dart';
 import 'package:sqlorder24/screen/ORDER/externalDir.dart';
@@ -10,13 +11,21 @@ class Unreg {
     Widget okButton = TextButton(
       child: Text("Yes"),
       onPressed: () async {
-        // Map<String, dynamic>? temp = await externalDir.fileRead();
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('company_id');
+        await prefs.remove("continueClicked");
+        await prefs.remove("staffLog");
+        await prefs.remove("st_username");
+        await prefs.remove("versof");
+        await prefs.remove("st_pwd");
+        await externalDir.deleteFile();
+        print("Everything cleared");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => NextPage(
-              // temp: temp!,
-            ),
+                // temp: temp!,
+                ),
           ),
         );
       },

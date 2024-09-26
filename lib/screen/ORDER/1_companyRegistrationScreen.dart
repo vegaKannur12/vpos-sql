@@ -76,7 +76,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     deletemenu();
     initPlatformState();
     codeController.text = "VEGADEMOAXVO";
-    phoneController.text = "7688987654";
+    // phoneController.text = "7688987654";
   }
 
   deletemenu() async {

@@ -56,40 +56,116 @@ class ExternalDir {
 //   }
 
   // Read map from file
-  Future<Map<String, dynamic>?> fileRead() async {
-    Directory? extDir = await getExternalStorageDirectory();
-    String dirPath = '${extDir!.path}/VgFp';
-     print("dirPath----$dirPath");
-    dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
-    await Directory(dirPath).create(recursive: true);
-    final File file = File('${dirPath}/dbDet.txt');
-     print("file...$file");
-    if (await file.exists()) 
-    {
-      print("File exists, reading...");
-      String fileContent = await file.readAsString();
-      print("File content: $fileContent");
-      return jsonDecode(fileContent) as Map<String, dynamic>;
-    } 
-    else 
-    {
-      print("File does not exist");
-      return null;
-    }
+  // Future<Map<String, dynamic>?> fileRead() async {
+  //   Directory? extDir = await getExternalStorageDirectory();
+  //   String dirPath = '${extDir!.path}/VgFp';
+  //    print("dirPath----$dirPath");
+  //   dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
+  //   await Directory(dirPath).create(recursive: true);
+  //   final File file = File('${dirPath}/dbDetails.txt');
+  //    print("file...$file");
+  //   if (await file.exists()) 
+  //   {
+  //     print("File exists, reading...");
+  //     String fileContent = await file.readAsString();
+  //     print("File content: $fileContent");
+  //     return jsonDecode(fileContent) as Map<String, dynamic>;
+  //   } 
+  //   else 
+  //   {
+  //     print("File does not exist");
+  //     return null;
+  //   }
+  // }
+Future<Map<String, dynamic>> fileRead() async {
+  Directory? extDir = await getExternalStorageDirectory();
+  String dirPath = '${extDir!.path}/VgFp';
+  dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
+  final File file = File('${dirPath}/dbDetails.txt');
+
+  // Check if the file exists
+  if (await file.exists()) {
+    String jsonString = await file.readAsString(); // Read the file as a string
+    Map<String, dynamic> data = jsonDecode(jsonString); // Convert JSON string back to Map
+    print("File read with data: $data");
+    return data;
+  } else
+   {
+    print("File does not exist");
+    return {}; // Return empty map if file doesn't exist
   }
+}
+Future<void> deleteFile() async {
+  Directory? extDir = await getExternalStorageDirectory();
+  String dirPath = '${extDir!.path}/VgFp';
+  dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
+  final File file = File('${dirPath}/dbDetails.txt');
+
+  // Check if the file exists
+  if (await file.exists()) {
+    await file.delete(); // Delete the file
+    print("File deleted successfully.");
+  } else {
+    print("File does not exist.");
+  }
+}
 
   // Write map to file
-  Future<void> fileWrite(Map<String, dynamic> data) async {
-    Directory? extDir = await getExternalStorageDirectory();
-    String dirPath = '${extDir!.path}/VgFp';
-    dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
-    await Directory(dirPath).create(recursive: true);
+  // Future<void> fileWrite(Map<String, dynamic> data) async {
+  //   Directory? extDir = await getExternalStorageDirectory();
+  //   String dirPath = '${extDir!.path}/VgFp';
+  //   dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
+  //   await Directory(dirPath).create(recursive: true);
 
-    final File file = File('${dirPath}/dbDet.txt');
-    String jsonString = jsonEncode(data); // Convert map to JSON string
-    await file.writeAsString(jsonString); // Write JSON string to file
-    print("File written with data: $jsonString");
+  //   final File file = File('${dirPath}/dbDetails.txt');
+  //   String jsonString = jsonEncode(data); // Convert map to JSON string
+  //   await file.writeAsString(jsonString); // Write JSON string to file
+  //   print("File written with data: $jsonString");
+  // }
+// Future<void> fileWrite(Map<String, dynamic> data) async {
+//   Directory? extDir = await getExternalStorageDirectory();
+//   String dirPath = '${extDir!.path}/VgFp';
+//   dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
+//   await Directory(dirPath).create(recursive: true);
+
+//   final File file = File('${dirPath}/dbDetails.txt');
+
+//   // Convert the map to JSON string
+//   String jsonString = jsonEncode(data);
+
+//   // Check if file exists
+//   if (await file.exists()) {
+//     // File exists, overwrite its content
+//     await file.writeAsString(jsonString, mode: FileMode.write);
+//     print("File overwritten with data: $jsonString");
+//   } else {
+//     // File does not exist, create and write data
+//     await file.writeAsString(jsonString);
+//     print("New file created with data: $jsonString");
+//   }
+// }
+Future<void> fileWrite(Map<String, dynamic> data) async {
+  Directory? extDir = await getExternalStorageDirectory();
+  String dirPath = '${extDir!.path}/VgFp';
+  dirPath = dirPath.replaceAll("Android/data/com.example.sqlorder24/files/", "");
+  await Directory(dirPath).create(recursive: true);
+
+  final File file = File('${dirPath}/dbDetails.txt'); //dbDet.txt
+
+  // Convert the map to JSON string
+  String jsonString = jsonEncode(data);
+
+  // Check if file exists and overwrite or create new
+  if (await file.exists()) {
+    // Overwrite existing file
+    await file.writeAsString(jsonString, mode: FileMode.write, flush: true);
+    print("File overwritten with data: $jsonString");
+  } else {
+    // Create and write new file
+    await file.writeAsString(jsonString, flush: true);
+    print("New file created with data: $jsonString");
   }
+}
 
 
   // Update content in file

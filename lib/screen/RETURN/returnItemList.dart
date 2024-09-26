@@ -21,6 +21,7 @@ class ReturnItem extends StatefulWidget {
   String areaName;
   String type;
   bool _isLoading = false;
+  String branch_id;
 
   ReturnItem({
     required this.customerId,
@@ -28,6 +29,7 @@ class ReturnItem extends StatefulWidget {
     required this.os,
     required this.areaName,
     required this.type,
+    required this.branch_id
   });
 
   @override
@@ -159,7 +161,7 @@ class _ReturnItemState extends State<ReturnItem> {
                           custmerId: widget.customerId,
                           os: widget.os,
                           areaname: widget.areaName,
-                          type: widget.type,
+                          type: widget.type,branch_id: widget.branch_id,
                         ),
                       ),
                     );
@@ -381,7 +383,7 @@ class _ReturnItemState extends State<ReturnItem> {
                                                       .salefilteredeValue!,
                                                   "return",
                                                   value.productName,
-                                                  context)
+                                                  context,widget.branch_id)
                                           : Provider.of<Controller>(context,
                                                   listen: false)
                                               .searchProcess(
@@ -390,7 +392,7 @@ class _ReturnItemState extends State<ReturnItem> {
                                                   "",
                                                   "return",
                                                   value.productName,
-                                                  context);
+                                                  context,widget.branch_id);
                                     }),
                                 IconButton(
                                     icon: Icon(

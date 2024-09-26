@@ -365,7 +365,7 @@ class OrderItemDetails {
                                                 os, customerId);
                                         Provider.of<Controller>(context,
                                                 listen: false)
-                                            .getBagDetails(customerId, os);
+                                            .getBagDetails(customerId, os,);
 
                                         Navigator.pop(context);
                                       },

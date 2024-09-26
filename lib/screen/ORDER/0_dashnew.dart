@@ -95,6 +95,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     // TODO: implement initState
     print("returned---");
     super.initState();
+    // Provider.of<Controller>(context, listen: false).initSecondaryDb(context);
     Provider.of<Controller>(context, listen: false).fetchMenusFromMenuTable();
 
     drawerOpts.clear();
@@ -110,8 +111,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
 
     formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
     s = formattedDate!.split(" ");
-    Provider.of<Controller>(context, listen: false)
-        .verifyRegistration(context, "");
+    // Provider.of<Controller>(context, listen: false)
+    //     .verifyRegistration(context, "");
     String? gen_area = Provider.of<Controller>(context, listen: false).areaId;
     print("gen area----$gen_area");
     if (gen_area != null) {
@@ -299,8 +300,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
 
       case "UL":
         {
-          Provider.of<Controller>(context, listen: false)
-              .verifyRegistration(context, "");
+          // Provider.of<Controller>(context, listen: false)
+          //     .verifyRegistration(context, "");
           return Uploaddata(
             title: "Upload data",
             cid: cid!,
@@ -310,8 +311,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
 
       case "DP":
         {
-          Provider.of<Controller>(context, listen: false)
-              .verifyRegistration(context, "");
+          // Provider.of<Controller>(context, listen: false)
+          //     .verifyRegistration(context, "");
           return DownloadedPage(
             title: "Download Page",
             type: "drawer call",
@@ -472,7 +473,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     return WillPopScope(
         onWillPop: () => _onBackPressed(context),
         child: Scaffold(
-          key: _key,  //
+          key: _key, //
           // backgroundColor: P_Settings.wavecolor,
           appBar:
               Provider.of<Controller>(context, listen: false).menu_index ==
@@ -592,24 +593,23 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                       Provider.of<Controller>(context, listen: false)
                                               .menu_index ==
                                           "0" ||
-                                      Provider.of<Controller>(context,
-                                                  listen: false)
+                                      Provider.of<Controller>(context, listen: false)
                                               .menu_index ==
                                           "1" ||
-                                      Provider.of<Controller>(context,
-                                                  listen: false)
+                                      Provider.of<Controller>(context, listen: false)
                                               .menu_index ==
                                           "2" ||
-                                      Provider.of<Controller>(context,
-                                                  listen: false)
+                                      Provider.of<Controller>(context, listen: false)
                                               .menu_index ==
                                           "3" ||
                                       Provider.of<Controller>(context,
                                                   listen: false)
                                               .menu_index ==
-                                          "4"||Provider.of<Controller>(context, listen: false)
-                                      .menu_index ==
-                                  "5"
+                                          "4" ||
+                                      Provider.of<Controller>(context,
+                                                  listen: false)
+                                              .menu_index ==
+                                          "5"
                                   ? P_Settings.wavecolor
                                   : Colors.white,
                             ),

@@ -18,6 +18,7 @@ class DownloadedPage extends StatefulWidget {
 class _DownloadedPageState extends State<DownloadedPage> {
   String? cid;
   String? sid;
+  String? bid;
   String? userType;
   String? formattedDate;
   List s = [];
@@ -32,8 +33,8 @@ class _DownloadedPageState extends State<DownloadedPage> {
     "Wallet",
     "Area",
     "Staff",
-    "Product units"
-    // "Images"
+    "Product units",
+    "Settings"
   ];
 
   @override
@@ -68,6 +69,7 @@ class _DownloadedPageState extends State<DownloadedPage> {
     cid = prefs.getString("cid");
     userType = prefs.getString("userType");
     sid = prefs.getString("sid");
+    bid = prefs.getString("br_id");
     // initPlatformState();
   }
 
@@ -151,38 +153,62 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                                   "Account Heads") {
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getaccountHeadsDetails(
-                                                        context,
-                                                        s[0],
-                                                        cid!,
-                                                        index);
+                                                    .getMasterData("customer",
+                                                        context, index, "");
+                                                print("s[0]===${s[0]}");
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getaccountHeadsDetails(
+                                                //         context,
+                                                //         s[0],
+                                                //         cid!,
+                                                //         index);
                                               }
                                               if (downloadItems[index] ==
-                                                  "Product category") {
+                                                  "Product category") 
+                                              {
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getProductCategory(
+                                                //         cid!, index);
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getProductCategory(
-                                                        cid!, index);
+                                                    .getMasterData("itemcategory",
+                                                        context, index, "");
                                               }
                                               if (downloadItems[index] ==
-                                                  "Company") {
-                                                Provider.of<Controller>(context,
+                                                  "Company") 
+                                              {
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getProductCompany(
+                                                //         cid!, index);
+                                                         Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getProductCompany(
-                                                        cid!, index);
+                                                    .getMasterData("itemcompany",
+                                                        context, index, "");
                                               }
                                               if (downloadItems[index] ==
-                                                  "Product Details") {
+                                                  "Product Details") 
+                                              {
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getProductDetails(
+                                                //         cid!, index);
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getProductDetails(
-                                                        cid!, index);
+                                                    .getMasterData("products",
+                                                        context, index, "");
                                               }
                                               if (downloadItems[index] ==
                                                   "Wallet") {
-                                                Provider.of<Controller>(context,
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getWallet(context, index);
+                                                      Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getWallet(context, index);
+                                                    .getMasterData("wallet",
+                                                        context, index, "");
                                               }
                                               if (downloadItems[index] ==
                                                   "Area") {
@@ -208,17 +234,22 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                               }
                                               if (downloadItems[index] ==
                                                   "Product units") {
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getProductUnits(
+                                                //         cid!, index);
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("units",
+                                                        context, index, "");
+                                                        
+                                              }
+                                              if (downloadItems[index] ==
+                                                  "Settings") {
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getProductUnits(
-                                                        cid!, index);
+                                                    .getMasterData("settings", context, index, "");
                                               }
-                                              // if (downloadItems[index] ==
-                                              //     "Settings") {
-                                              //   Provider.of<Controller>(context,
-                                              //           listen: false)
-                                              //       .getSettings(context, index);
-                                              // }
                                             },
                               icon: Icon(Icons.download),
                               color: Colors.white,

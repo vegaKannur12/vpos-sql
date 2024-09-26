@@ -26,7 +26,7 @@ class SaleItemDetails {
       String customerId,
       String os,
       double pkg,
-      String unit_name) {
+      String unit_name,String branch_id) {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -685,7 +685,7 @@ class SaleItemDetails {
                                                 os, customerId);
                                         Provider.of<Controller>(context,
                                                 listen: false)
-                                            .getSaleBagDetails(customerId, os,"",context,"","");
+                                            .getSaleBagDetails(customerId, os,"",context,"","",branch_id);
 
                                         Navigator.pop(context);
                                       },

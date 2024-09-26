@@ -12,12 +12,13 @@ class ReturnCart extends StatefulWidget {
   String areaId;
   String areaname;
   String type;
+  String branch_id;
   ReturnCart(
       {required this.areaId,
       required this.custmerId,
       required this.os,
       required this.areaname,
-      required this.type});
+      required this.type,required this.branch_id});
 
   @override
   State<ReturnCart> createState() => _ReturnCartState();
@@ -345,7 +346,7 @@ class _ReturnCartState extends State<ReturnCart> {
                                     s[1],
                                     refController.text,
                                     reasonController.text,
-                                    "",
+                                    "",widget.branch_id
                                   
                                   ),
                                 );

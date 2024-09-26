@@ -30,6 +30,7 @@ class SalesItem extends StatefulWidget {
   String type;
   bool _isLoading = false;
   String gtype;
+  String branch_id;
 
   SalesItem(
       {required this.customerId,
@@ -37,7 +38,9 @@ class SalesItem extends StatefulWidget {
       required this.os,
       required this.areaName,
       required this.type,
-      required this.gtype});
+      required this.gtype,
+      required this.branch_id
+      });
 
   @override
   State<SalesItem> createState() => _SalesItemState();
@@ -122,7 +125,7 @@ class _SalesItemState extends State<SalesItem> {
 
                           Provider.of<Controller>(context, listen: false)
                               .getSaleBagDetails(widget.customerId, widget.os,
-                                  "", context, widget.areaId, widget.areaName);
+                                  "", context, widget.areaId, widget.areaName,widget.branch_id);
 
                           Navigator.of(context).push(
                             PageRouteBuilder(
@@ -132,7 +135,7 @@ class _SalesItemState extends State<SalesItem> {
                                 custmerId: widget.customerId,
                                 os: widget.os,
                                 areaname: widget.areaName,
-                                type: widget.type,
+                                type: widget.type,branch_id: widget.branch_id,
                               ),
                             ),
                           );
@@ -335,7 +338,7 @@ class _SalesItemState extends State<SalesItem> {
                                     "sales",
                                     value.salesitemList2,
                                     "sales",
-                                    context)
+                                    context,widget.branch_id)
                             : Provider.of<Controller>(context, listen: false)
                                 .searchProcess_X001(
                                     widget.customerId,
@@ -344,7 +347,7 @@ class _SalesItemState extends State<SalesItem> {
                                     "sales",
                                     value.salesitemList2,
                                     "sales",
-                                    context);
+                                    context,widget.branch_id);
                       }
                     },
                     decoration: InputDecoration(
@@ -573,7 +576,7 @@ class _SalesItemState extends State<SalesItem> {
                                               widget.os,
                                               0.0,
                                               s[0],
-                                              s[1],
+                                              s[1],widget.branch_id
                                             );
                                           }
                                         },
@@ -735,7 +738,7 @@ class _SalesItemState extends State<SalesItem> {
                                       widget.os,
                                       0.0,
                                       s[0],
-                                      s[1],
+                                      s[1],widget.branch_id
                                     );
                                   }
                                 },
