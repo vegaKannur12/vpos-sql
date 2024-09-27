@@ -333,10 +333,10 @@ class _TodaySaleState extends State<TodaySale> {
 
                                           InkWell(
                                               onTap: () async {
-                                                Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getBalance(cid, value.todaySalesList[index]["Cus_id"],
-                                                        context);
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .getBalance(cid, value.todaySalesList[index]["Cus_id"],
+                                                //         context);
                                                 String cancelled;
                                                 if (value.todaySalesList[index]
                                                         ["cancel"] ==

@@ -364,14 +364,12 @@ class _CollectionPageState extends State<CollectionPage> {
                                             listen: false)
                                         .fetchtotalcollectionFromTable(
                                             widget.cuid!);
-print("setting list--${Provider.of<Controller>(context,
-                                                listen: false)
-                                            .settingsList1}");
+                                    print(
+                                        "setting list--${Provider.of<Controller>(context, listen: false).settingsList1}");
                                     if (Provider.of<Controller>(context,
                                                 listen: false)
                                             .settingsList1[0]["set_value"] ==
-                                        "YES") 
-                                    {
+                                        "YES") {
                                       print("upload----");
                                       Provider.of<Controller>(context,
                                               listen: false)
@@ -385,13 +383,15 @@ print("setting list--${Provider.of<Controller>(context,
                                               listen: false)
                                           .dashboardSummery(sid!, s[0],
                                               value.areaidFrompopup!, context);
-                                    } else {
+                                    }                                   
+                                    else 
+                                    {
                                       await Provider.of<Controller>(context,
                                               listen: false)
                                           .dashboardSummery(
                                               sid!, s[0], "", context);
                                     }
-
+                                    
                                     // Provider.of<Controller>(context,
                                     //         listen: false)
                                     //     .mainDashtileValues(sid!, s[0]);

@@ -300,6 +300,8 @@ class Controller extends ChangeNotifier {
   List<Map<String, dynamic>> prodctItems = [];
   List<Map<String, dynamic>> ordernum = [];
   List<Map<String, dynamic>> approximateSum = [];
+  List<Map<String, dynamic>> prodstockList = [];
+
   // List<WalletModal> wallet = [];
   StaffDetails staffModel = StaffDetails();
   UserTypeModel userTypemodel = UserTypeModel();
@@ -1022,10 +1024,17 @@ class Controller extends ChangeNotifier {
       isDownloaded = true;
       isCompleted = true;
       isLoading = true;
+      notifyListeners();
       if (page != "company details") {
         isLoading = true;
         notifyListeners();
       }
+      // if (page == "all") {
+      //   isDownloaded = true;
+      //   isCompleted = true;
+      //   isLoading = true;
+      //   notifyListeners();
+      // }
       print("Query=====${"FLT_GET_MASTER_DATA '$datavalue','$branch_id'"}");
       var res = await SqlConn.readData(
           "FLT_GET_MASTER_DATA '$datavalue','$branch_id'");
@@ -1046,10 +1055,12 @@ class Controller extends ChangeNotifier {
           restaff = await OrderAppDB.instance.insertStaffDetails(staffModel);
         }
         print("inserted staff ${restaff}");
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "settings") {
         await OrderAppDB.instance
             .deleteFromTableCommonQuery("settingsTable", "");
@@ -1065,10 +1076,12 @@ class Controller extends ChangeNotifier {
           settingsModal = SettingsModel.fromJson(item);
           await OrderAppDB.instance.insertsettingsTable(settingsModal);
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "area") {
         await OrderAppDB.instance
             .deleteFromTableCommonQuery('areaDetailsTable', "");
@@ -1080,10 +1093,12 @@ class Controller extends ChangeNotifier {
               await OrderAppDB.instance.insertStaffAreaDetails(staffArea);
           print("inserted ${staffar}");
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "customer") {
         print("costomer map ${map}");
 
@@ -1111,10 +1126,12 @@ class Controller extends ChangeNotifier {
             }
           }
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "products") {
         if (map.isNotEmpty) {
           await OrderAppDB.instance
@@ -1129,10 +1146,12 @@ class Controller extends ChangeNotifier {
         } else {
           print("empty---[]");
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "itemcategory") {
         await OrderAppDB.instance
             .deleteFromTableCommonQuery("productsCategory", "");
@@ -1144,10 +1163,12 @@ class Controller extends ChangeNotifier {
           var product =
               await OrderAppDB.instance.insertProductCategory(category);
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "itemcompany") {
         await OrderAppDB.instance
             .deleteFromTableCommonQuery("companyTable", "");
@@ -1160,10 +1181,12 @@ class Controller extends ChangeNotifier {
           var product =
               await OrderAppDB.instance.insertProductCompany(productCompany);
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "wallet") {
         await OrderAppDB.instance.deleteFromTableCommonQuery("walletTable", "");
 
@@ -1175,10 +1198,12 @@ class Controller extends ChangeNotifier {
           await OrderAppDB.instance.insertwalletTable(walletModal);
           // menuList.add(menuItem);
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "units") {
         await OrderAppDB.instance
             .deleteFromTableCommonQuery("productUnits", "");
@@ -1189,10 +1214,12 @@ class Controller extends ChangeNotifier {
           var product =
               await OrderAppDB.instance.insertProductUnit(productUnits);
         }
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
       } else if (datavalue == "stock") {
         print("stock Map --- ${map}");
 
@@ -1207,12 +1234,27 @@ class Controller extends ChangeNotifier {
           var stkkdet = await OrderAppDB.instance.insertStockDetails(stk);
           print("inserted stock ${stkkdet}");
         }
-        isDownloaded = false;
-        isDown[index] = true;
+
+        // List<Map<String, dynamic>> sfRes = await OrderAppDB.instance
+        // .selectAllcommon('salesMasterTable', "sflag=0");
+        // returnMasterTable
+        await OrderAppDB.instance
+            .upadteCommonQuery("salesMasterTable", "sflag=1", "sflag=0");
+
+        if (page != "all") {
+          isDownloaded = false;
+          isDown[index] = true;
+          isLoading = false;
+          notifyListeners();
+        }
+      }
+      if (page != "company details") {
         isLoading = false;
         notifyListeners();
       }
-      if (page != "company details") {
+      if (page == "all") {
+        isDownloaded = false;
+        isDown[index] = true;
         isLoading = false;
         notifyListeners();
       }
@@ -2524,6 +2566,21 @@ class Controller extends ChangeNotifier {
 
     print("products filter-----$result");
 
+    isLoading = false;
+    notifyListeners();
+  }
+
+/////////////////////////////////////////////////////////////
+  selectStockandProdfromDB(BuildContext context) async {
+    isLoading = true;
+    prodstockList.clear();
+    notifyListeners();
+    var res = await OrderAppDB.instance.selectStockandProd_22();
+    print("res stock list----${res}");
+    for (var item in res) {
+      prodstockList.add(item);
+    }
+    print("prodstockList ----${prodstockList}");
     isLoading = false;
     notifyListeners();
   }

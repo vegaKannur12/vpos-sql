@@ -178,6 +178,7 @@ class OrderAppDB {
   /////////stock table//////////////////
   static final ppid = 'ppid';
   static final pstock = 'pstock';
+  static final pstockout = 'pstockout';
 ////////////collection table///////////////
   static final rec_date = 'rec_date';
   static final rec_cusid = 'rec_cusid';
@@ -256,6 +257,7 @@ class OrderAppDB {
   static final cancel = 'cancel';
   static final cancel_staff = 'cancel_staff';
   static final cancel_dateTime = 'cancel_dateTime';
+  static final sflag = 'sflag';
 
   Future<Database> get database async {
     print("bjhs");
@@ -369,7 +371,8 @@ class OrderAppDB {
           CREATE TABLE stockDetailsTable (
             $id INTEGER PRIMARY KEY AUTOINCREMENT,
             $ppid TEXT,
-            $pstock TEXT
+            $pstock TEXT,
+            $pstockout TEXT
           )
           ''');
     await db.execute('''
@@ -484,7 +487,8 @@ class OrderAppDB {
             $cancel INTEGER,
             $cancel_staff TEXT,
             $cancel_dateTime TEXT,
-            $brrid TEXT
+            $brrid TEXT,
+            $sflag INTEGER
           )
           ''');
     await db.execute('''
@@ -1117,7 +1121,7 @@ class OrderAppDB {
       res2 = await db.rawInsert(query2);
     } else if (table == "salesMasterTable") {
       var query3 =
-          'INSERT INTO salesMasterTable(sales_id, salesdate, salestime, os, cus_type, bill_no, customer_id, staff_id, areaid, total_qty, payment_mode, credit_option, gross_tot, dis_tot, tax_tot, ces_tot, rounding, net_amt,  state_status, status , cancel ,cancel_staff,cancel_dateTime,brrid) VALUES("${sales_id}", "${salesdate}", "${salestime}", "${os}", "${cus_type}", "${bill_no}", "${customer_id}", "${staff_id}", "${areaid}", $total_qty, "${payment_mode}", "${credit_option}", $gross_tot, $dis_tot, $tax_tot, $ces_tot,${rounding}, ${total_price.toStringAsFixed(2)}, $state_status, ${status},${cancelStatus},"${cancel_staff}","${cancel_dateTime}","$branch_id")';
+          'INSERT INTO salesMasterTable(sales_id, salesdate, salestime, os, cus_type, bill_no, customer_id, staff_id, areaid, total_qty, payment_mode, credit_option, gross_tot, dis_tot, tax_tot, ces_tot, rounding, net_amt,  state_status, status , cancel ,cancel_staff,cancel_dateTime,brrid,sflag) VALUES("${sales_id}", "${salesdate}", "${salestime}", "${os}", "${cus_type}", "${bill_no}", "${customer_id}", "${staff_id}", "${areaid}", $total_qty, "${payment_mode}", "${credit_option}", $gross_tot, $dis_tot, $tax_tot, $ces_tot,${rounding}, ${total_price.toStringAsFixed(2)}, $state_status, ${status},${cancelStatus},"${cancel_staff}","${cancel_dateTime}","$branch_id",0)';
       res2 = await db.rawInsert(query3);
       print("insertsalesmaster$query3");
     }
@@ -1330,7 +1334,7 @@ class OrderAppDB {
   Future insertStockDetails(StockDetails sdata) async {
     final db = await database;
     var query3 =
-        'INSERT INTO stockDetailsTable(ppid,pstock) VALUES(${sdata.ppid},"${sdata.pstock}")';
+        'INSERT INTO stockDetailsTable(ppid,pstock,pstockout) VALUES(${sdata.ppid},"${sdata.pstock}","0")';
     var res = await db.rawInsert(query3);
     print(query3);
     print(res);
@@ -2202,9 +2206,19 @@ class OrderAppDB {
           "SELECT p.pid prid,p.code prcode,p.item pritem ,p.hsn hsn ,p.rate1 prrate1,sum(o.qty) qty" +
               " from 'productDetailsTable' p left join 'orderBagTable' o on p.code =o.code and o.customerid='$customerId' group by p.pid,p.code,p.item order by p.item";
     } else if (type == "sales") {
+      // itemselectionquery =
+      //     "SELECT p.pid prid,p.code prcode,p.item pritem ,p.hsn hsn ,p.rate1 prrate1,sum(s.qty) qty" +
+      //         " from 'productDetailsTable' p left join 'salesBagTable' s on p.code  = s.code and s.customerid='$customerId' group by p.pid,p.code,p.item order by p.item";
       itemselectionquery =
-          "SELECT p.pid prid,p.code prcode,p.item pritem ,p.hsn hsn ,p.rate1 prrate1,sum(s.qty) qty" +
-              " from 'productDetailsTable' p left join 'salesBagTable' s on p.code  = s.code and s.customerid='$customerId' group by p.pid,p.code,p.item order by p.item";
+          " SELECT p.pid prid,p.code prcode,p.item pritem ,p.hsn hsn ,p.rate1 prrate1,sum(s.qty) qty, " +
+              "(st.pstock-IFNULL(x.slQty,0) ) ActStock " +
+              "from 'productDetailsTable' p " +
+              "inner join stockDetailsTable st on p.code=st.ppid and st.pstock >= 0 " +
+              "Left Join (Select sd.code slCode , sum(sd.qty) slQty from salesMasterTable sm " +
+              "Inner Join salesDetailTable sd on sm.sales_id=sd.sales_id " +
+              "where sm.sflag = 0 Group By sd.code) x on x.slCode= st.ppid " +
+              "left join 'salesBagTable' s on p.code  = s.code and s.customerid='$customerId' " +
+              "group by p.pid,p.code,p.item order by p.item";
     }
 
     // unitquery = "select k.*,b.*, (k.prbaserate * k.pkg ) prrate1 from (" +
@@ -2220,6 +2234,27 @@ class OrderAppDB {
     result = await db.rawQuery(itemselectionquery);
 
     print("itemselection daat--${result}");
+    return result;
+  }
+
+//////////////////////////////////////////////////////////////////////////
+
+  selectStockandProd_22() async {
+    List<Map<String, dynamic>> result;
+    Database db = await instance.database;
+    var stockreport;
+    stockreport = "SELECT p.code prcode,p.item pritem, " +
+        "st.pstock OpStock,IFNULL(x.slQty,0) SalesQty, " +
+        "(st.pstock-IFNULL(x.slQty,0) ) BalStock " +
+        "from 'productDetailsTable' p " +
+        "inner join stockDetailsTable st on p.code=st.ppid and st.pstock > 0 " +
+        "Left Join (Select sd.code slCode , sum(sd.qty) slQty from salesMasterTable sm " +
+        "Inner Join salesDetailTable sd on sm.sales_id=sd.sales_id " +
+        "where sm.sflag = 0 Group By sd.code) x on x.slCode= st.ppid " +
+        "group by p.code,p.item order by p.item ";      
+    print("stock report..$stockreport");
+    result = await db.rawQuery(stockreport);
+    print("stock report daat--${result}");
     return result;
   }
 
@@ -2302,6 +2337,19 @@ class OrderAppDB {
             "ORDER BY cartrowno DESC");
     print("leftjoin result- company---$result");
     print("length---${result.length}");
+    return result;
+  }
+////////////////////////////////////////////////////////////////////////////////
+
+  selectStockandProd() async {
+    List<Map<String, dynamic>> result;
+    Database db = await instance.database;
+    var unitquery1 = "";
+    unitquery1 = "SELECT pd.item pitem,pd.code pcode,sd.pstock pstock " +
+        "FROM productDetailsTable pd " +
+        " INNER JOIN stockDetailsTable sd ON pd.code=sd.ppid";
+    result = await db.rawQuery(unitquery1);
+    print("Stock and Prod result.........$result");
     return result;
   }
 

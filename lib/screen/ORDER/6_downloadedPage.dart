@@ -26,6 +26,7 @@ class _DownloadedPageState extends State<DownloadedPage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   List<String> downloadItems = [
+    "Download All",
     "Account Heads",
     "Product Details",
     "Product category",
@@ -34,7 +35,8 @@ class _DownloadedPageState extends State<DownloadedPage> {
     "Area",
     "Staff",
     "Product units",
-    "Settings"
+    "Settings",
+    "Stock"
   ];
 
   @override
@@ -148,6 +150,55 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                                       listen: false)
                                                   .isautodownload = false;
                                               print("time delay inside");
+                                              if (downloadItems[index] ==
+                                                  "Download All") {
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("customer",
+                                                        context, index, "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("products",
+                                                        context, index, "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData(
+                                                        "itemcategory",
+                                                        context,
+                                                        index,
+                                                        "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData(
+                                                        "itemcompany",
+                                                        context,
+                                                        index,
+                                                        "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("wallet",
+                                                        context, index, "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("area",
+                                                        context, index, "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("staff",
+                                                        context, index, "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("units",
+                                                        context, index, "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("settings",
+                                                        context, index, "all");
+                                                         Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("stock",
+                                                        context, 0, "all");               
+                                              }
 
                                               if (downloadItems[index] ==
                                                   "Account Heads") {
@@ -165,32 +216,35 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                                 //         index);
                                               }
                                               if (downloadItems[index] ==
-                                                  "Product category") 
-                                              {
+                                                  "Product category") {
                                                 // Provider.of<Controller>(context,
                                                 //         listen: false)
                                                 //     .getProductCategory(
                                                 //         cid!, index);
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getMasterData("itemcategory",
-                                                        context, index, "");
+                                                    .getMasterData(
+                                                        "itemcategory",
+                                                        context,
+                                                        index,
+                                                        "");
                                               }
                                               if (downloadItems[index] ==
-                                                  "Company") 
-                                              {
+                                                  "Company") {
                                                 // Provider.of<Controller>(context,
                                                 //         listen: false)
                                                 //     .getProductCompany(
                                                 //         cid!, index);
-                                                         Provider.of<Controller>(context,
+                                                Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getMasterData("itemcompany",
-                                                        context, index, "");
+                                                    .getMasterData(
+                                                        "itemcompany",
+                                                        context,
+                                                        index,
+                                                        "");
                                               }
                                               if (downloadItems[index] ==
-                                                  "Product Details") 
-                                              {
+                                                  "Product Details") {
                                                 // Provider.of<Controller>(context,
                                                 //         listen: false)
                                                 //     .getProductDetails(
@@ -205,7 +259,7 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                                 // Provider.of<Controller>(context,
                                                 //         listen: false)
                                                 //     .getWallet(context, index);
-                                                      Provider.of<Controller>(context,
+                                                Provider.of<Controller>(context,
                                                         listen: false)
                                                     .getMasterData("wallet",
                                                         context, index, "");
@@ -238,18 +292,31 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                                 //         listen: false)
                                                 //     .getProductUnits(
                                                 //         cid!, index);
-                                                         Provider.of<Controller>(context,
+                                                Provider.of<Controller>(context,
                                                         listen: false)
                                                     .getMasterData("units",
                                                         context, index, "");
-                                                        
                                               }
                                               if (downloadItems[index] ==
                                                   "Settings") {
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getMasterData("settings", context, index, "");
+                                                    .getMasterData("settings",
+                                                        context, index, "");
                                               }
+                                              if (downloadItems[index] ==
+                                                  "Stock") {
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .getMasterData("stock",
+                                                        context, 0, "");
+                                              }
+
+                                              // Stock
+                                              //   Provider.of<Controller>(context,
+                                              //     listen: false)
+                                              // .getMasterData(
+                                              //     "stock", context, 0, "company details");
                                             },
                               icon: Icon(Icons.download),
                               color: Colors.white,

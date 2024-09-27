@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sqlorder24/components/commoncolor.dart';
+import 'package:sqlorder24/components/customSnackbar.dart';
 import 'package:sqlorder24/controller/controller.dart';
 import 'package:sqlorder24/db_helper.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 class CoconutSheet {
   List rawCalcResult = [];
   List splitted = [];
-  // String? selected;
+  // String? stockout = "";
   ValueNotifier<bool> visible = ValueNotifier(false);
   showsalesMoadlBottomsheet(
       String item,
@@ -27,13 +28,15 @@ class CoconutSheet {
       String os,
       double pkg,
       String date,
-      String time,String branch_id
-      ) {
+      String time,
+      String branch_id,
+      double actstock) {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
-          print("param---$pkg----$item....$code....-$index--$tax_per");
+          print(
+              "param---$pkg----$item....$code....-$index--$tax_per----$actstock");
           // rawCalcResult = Provider.of<Controller>(context,listen: false).rawCalculation(rate,qty.toDouble(), 0.0, 100,tax_per, 0.0, "0", 0);
 
           // value.discount_prercent[index].text = dis_per.toString();
@@ -857,106 +860,134 @@ class CoconutSheet {
                                         width: size.width * 0.4,
                                         child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: P_Settings.salewaveColor,
+                                              backgroundColor:
+                                                  P_Settings.salewaveColor,
                                             ),
                                             onPressed: () async {
                                               // int indexCalc = index + 1;
+                                              if (double.parse(value
+                                                      .salesqty_X001[index]
+                                                      .text) >
+                                                  actstock) {
+                                                print("stick out");
+                                                // stockout =
+                                                //     "No Sufficient Stock";
+                                                // CustomSnackbar snackbar =
+                                                //     CustomSnackbar();
+                                                // snackbar.showSnackbar(context,
+                                                //     "No Sufficient Stock", "");
+                                                     Fluttertoast.showToast(
+                                                  msg:
+                                                      "No Sufficient Stock",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  textColor: Colors.white,
+                                                  fontSize: 14.0,
+                                                  backgroundColor: Colors.redAccent,
+                                                );
+                                              } else {
+                                                int max = await OrderAppDB
+                                                    .instance
+                                                    .getMaxCommonQuery(
+                                                        'salesBagTable',
+                                                        'cartrowno',
+                                                        "os='${os}' AND customerid='${customerId}'");
+                                                var pid =
+                                                    value.salesitemList2[index]
+                                                        ['prid'];
+                                                //      if (value.salesqty_X001[index]    //changed on 27sep
+                                                //         .text !=
+                                                //     null &&
+                                                // value.salesqty_X001[index]
+                                                //     .text.isNotEmpty) {
+                                                if (value.salesqty_X001[index]
+                                                    .text.isNotEmpty) {
+                                                  double total = double.parse(
+                                                          value
+                                                              .salesrate_X001[
+                                                                  index]
+                                                              .text) *
+                                                      double.parse(value
+                                                          .salesqty_X001[index]
+                                                          .text);
 
-                                              int max = await OrderAppDB
-                                                  .instance
-                                                  .getMaxCommonQuery(
-                                                      'salesBagTable',
-                                                      'cartrowno',
-                                                      "os='${os}' AND customerid='${customerId}'");
-                                              var pid =
-                                                  value.salesitemList2[index]
-                                                      ['prid'];
-                                              if (value.salesqty_X001[index]
-                                                          .text !=
-                                                      null &&
-                                                  value.salesqty_X001[index]
-                                                      .text.isNotEmpty) {
-                                                double total = double.parse(
-                                                        value
-                                                            .salesrate_X001[
-                                                                index]
-                                                            .text) *
-                                                    double.parse(value
-                                                        .salesqty_X001[index]
-                                                        .text);
-
-                                                double baseRate = double.parse(
-                                                        value
-                                                            .salesrate_X001[
-                                                                index]
-                                                            .text) /
-                                                    value.package!;
-                                                print("rateggg----$baseRate");
-                                                await OrderAppDB.instance
-                                                    .insertsalesBagTable_X001(
-                                                        item,
-                                                        date,
-                                                        time,
-                                                        os,
-                                                        customerId,
-                                                        max,
-                                                        code,
-                                                        double.parse(value
-                                                            .salesqty_X001[
-                                                                index]
-                                                            .text),
-                                                        value
-                                                            .salesrate_X001[
-                                                                index]
-                                                            .text,
-                                                        value.taxable_rate,
-                                                        total,
-                                                        value.settingsList1[1]
-                                                                ['set_value']
-                                                            .toString(),
-                                                        value.salesitemList2[
-                                                            index]["hsn"],
-                                                        tax_per,
-                                                        value.tax,
-                                                        value.cgst_per,
-                                                        value.cgst_amt,
-                                                        value.sgst_per,
-                                                        value.sgst_amt,
-                                                        value.igst_per,
-                                                        value.igst_amt,
-                                                        double.parse(value
-                                                            .discount_prercent_X001[
-                                                                index]
-                                                            .text),
-                                                        double.parse(value
-                                                            .discount_amount_X001[
-                                                                index]
-                                                            .text),
-                                                        cess_per,
-                                                        value.cess,
-                                                        0,
-                                                        value.net_amt,
-                                                        pid,
-                                                        value.selectedItem,
-                                                        value.package!,
-                                                        baseRate,branch_id.toString());
+                                                  double baseRate =
+                                                      double.parse(value
+                                                              .salesrate_X001[
+                                                                  index]
+                                                              .text) /
+                                                          value.package!;
+                                                  print("rateggg----$baseRate");
+                                                  await OrderAppDB.instance
+                                                      .insertsalesBagTable_X001(
+                                                          item,
+                                                          date,
+                                                          time,
+                                                          os,
+                                                          customerId,
+                                                          max,
+                                                          code,
+                                                          double.parse(value
+                                                              .salesqty_X001[
+                                                                  index]
+                                                              .text),
+                                                          value
+                                                              .salesrate_X001[
+                                                                  index]
+                                                              .text,
+                                                          value.taxable_rate,
+                                                          total,
+                                                          value.settingsList1[1]
+                                                                  ['set_value']
+                                                              .toString(),
+                                                          value.salesitemList2[index]
+                                                              ["hsn"],
+                                                          tax_per,
+                                                          value.tax,
+                                                          value.cgst_per,
+                                                          value.cgst_amt,
+                                                          value.sgst_per,
+                                                          value.sgst_amt,
+                                                          value.igst_per,
+                                                          value.igst_amt,
+                                                          double.parse(value
+                                                              .discount_prercent_X001[
+                                                                  index]
+                                                              .text),
+                                                          double.parse(value
+                                                              .discount_amount_X001[
+                                                                  index]
+                                                              .text),
+                                                          cess_per,
+                                                          value.cess,
+                                                          0,
+                                                          value.net_amt,
+                                                          pid,
+                                                          value.selectedItem,
+                                                          value.package!,
+                                                          baseRate,
+                                                          branch_id.toString());
+                                                }
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "$item Added Successfully",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  textColor: Colors.white,
+                                                  fontSize: 14.0,
+                                                  backgroundColor: Colors.green,
+                                                );
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .calculatesalesTotal(
+                                                        os, customerId);
+                                                // stockout = "";
+                                                Navigator.pop(context);
                                               }
-                                              Fluttertoast.showToast(
-                                                msg:
-                                                    "$item Inserted Successfully",
-                                                toastLength: Toast.LENGTH_SHORT,
-                                                gravity: ToastGravity.CENTER,
-                                                timeInSecForIosWeb: 1,
-                                                textColor: Colors.white,
-                                                fontSize: 14.0,
-                                                backgroundColor: Colors.green,
-                                              );
-                                              Provider.of<Controller>(context,
-                                                      listen: false)
-                                                  .calculatesalesTotal(
-                                                      os, customerId);
-
-                                              Navigator.pop(context);
                                             },
                                             child: Text(
                                               "Add ",
@@ -968,6 +999,7 @@ class CoconutSheet {
                                   ],
                                 ),
                               ),
+                              // Text("${stockout.toString()}")
                             ],
                           ),
                   ),

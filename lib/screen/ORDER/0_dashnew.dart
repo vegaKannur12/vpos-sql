@@ -13,6 +13,7 @@ import 'package:sqlorder24/components/unregister_popup.dart';
 import 'package:sqlorder24/controller/controller.dart';
 import 'package:sqlorder24/db_helper.dart';
 import 'package:sqlorder24/screen/ADMIN_/admin_dashboard.dart';
+import 'package:sqlorder24/screen/NEWPAGES/stockreport.dart';
 import 'package:sqlorder24/screen/ORDER/2_companyDetailsscreen.dart';
 import 'package:sqlorder24/screen/ORDER/3_staffLoginScreen.dart';
 import 'package:sqlorder24/screen/ORDER/5_mainDashboard.dart';
@@ -51,6 +52,9 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     Tab(text: 'Upload Pending'),
     Tab(text: 'Todays Bills'),
     Tab(text: 'Todays Collection'),
+    Tab(
+      text: 'Stock Report',
+    )
   ];
   List<Widget> drawerOpts = [];
   String? gen_condition;
@@ -95,9 +99,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     // TODO: implement initState
     print("returned---");
     super.initState();
-    // Provider.of<Controller>(context, listen: false).initSecondaryDb(context);
+    // Provider.of<Controller>(context, listen: false)
+    //     .selectStockandProdfromDB(context);
     Provider.of<Controller>(context, listen: false).fetchMenusFromMenuTable();
-    
+
     // Provider.of<Controller>(context, listen: false).getMasterData("stock", context, 0, "");
     drawerOpts.clear();
     print(
@@ -159,8 +164,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   // }
 
   getCompaniId() async {
-    await Provider.of<Controller>(context, listen: false).initSecondaryDb(context);
-    await Provider.of<Controller>(context, listen: false).getMasterData("stock", context, 0, "");
+    // await Provider.of<Controller>(context, listen: false)
+    //     .initSecondaryDb(context);
+    // await Provider.of<Controller>(context, listen: false)
+    //     .getMasterData("stock", context, 0, "");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     cid = prefs.getString("cid");
     os = prefs.getString("os");
@@ -387,6 +394,15 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
               .todayCollection(s[0], "");
           return TodayCollection();
         }
+      case "6":
+        {
+          Provider.of<Controller>(context, listen: false).setDate(s[0], "");
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Provider.of<Controller>(context, listen: false)
+                .selectStockandProdfromDB(context);
+          });
+          return StockReport();
+        }
 
       // case "3":
       //   {
@@ -478,54 +494,52 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
         child: Scaffold(
           key: _key, //
           // backgroundColor: P_Settings.wavecolor,
-          appBar:
-              Provider.of<Controller>(context, listen: false).menu_index ==
-                          "UL" ||
-                      Provider.of<Controller>(context, listen: false)
-                              .menu_index ==
-                          "DP"
-                  ? AppBar(
-                      flexibleSpace: Container(
-                        decoration: BoxDecoration(),
-                      ),
-                      elevation: 0,
-                      title: Text(
-                        title,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      // backgroundColor: P_Settings.wavecolor,
-                      bottom: PreferredSize(
-                        preferredSize: Size.fromHeight(6.0),
-                        child: Consumer<Controller>(
-                          builder: (context, value, child) {
-                            if (value.isLoading) {
-                              return LinearProgressIndicator(
-                                backgroundColor: Colors.white,
-                                color: P_Settings.wavecolor,
+          appBar: Provider.of<Controller>(context, listen: false).menu_index ==
+                      "UL" ||
+                  Provider.of<Controller>(context, listen: false).menu_index ==
+                      "DP"
+              ? AppBar(
+                  flexibleSpace: Container(
+                    decoration: BoxDecoration(),
+                  ),
+                  elevation: 0,
+                  title: Text(
+                    title,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  // backgroundColor: P_Settings.wavecolor,
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(6.0),
+                    child: Consumer<Controller>(
+                      builder: (context, value, child) {
+                        if (value.isLoading) {
+                          return LinearProgressIndicator(
+                            backgroundColor: Colors.white,
+                            color: P_Settings.wavecolor,
 
-                                // valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
-                                // value: 0.25,
-                              );
-                            } else {
-                              return Container();
-                            }
-                          },
-                        ),
-                      ),
-                      // title: Text("Company Details",style: TextStyle(fontSize: 20),),
-                    )
-                  : AppBar(
-                      flexibleSpace: Container(
-                        decoration: BoxDecoration(),
-                      ),
-                      backgroundColor: Provider.of<Controller>(context,
-                                          listen: false)
-                                      .menu_index ==
+                            // valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
+                            // value: 0.25,
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
+                  ),
+                  // title: Text("Company Details",style: TextStyle(fontSize: 20),),
+                )
+              : AppBar(
+                  flexibleSpace: Container(
+                    decoration: BoxDecoration(),
+                  ),
+                  backgroundColor:
+                      Provider.of<Controller>(context, listen: false).menu_index ==
                                   "S1" ||
                               Provider.of<Controller>(context, listen: false)
                                       .menu_index ==
                                   "0" ||
-                              Provider.of<Controller>(context, listen: false)
+                              Provider.of<Controller>(context,
+                                          listen: false)
                                       .menu_index ==
                                   "1" ||
                               Provider.of<Controller>(context, listen: false)
@@ -539,12 +553,15 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                   "4" ||
                               Provider.of<Controller>(context, listen: false)
                                       .menu_index ==
-                                  "5"
+                                  "5" ||
+                              Provider.of<Controller>(context, listen: false)
+                                      .menu_index ==
+                                  "6"
                           ? Colors.white
                           : P_Settings.wavecolor,
 
-                      bottom: Provider.of<Controller>(context, listen: false)
-                                      .menu_index ==
+                  bottom:
+                      Provider.of<Controller>(context, listen: false).menu_index ==
                                   "S1" ||
                               Provider.of<Controller>(context, listen: false)
                                       .menu_index ==
@@ -563,7 +580,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                   "0" ||
                               Provider.of<Controller>(context, listen: false)
                                       .menu_index ==
-                                  "5"
+                                  "5" ||
+                              Provider.of<Controller>(context, listen: false)
+                                      .menu_index ==
+                                  "6"
                           ? TabBar(
                               isScrollable: true,
                               // indicator: BoxDecoration(
@@ -586,169 +606,170 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                               controller: _tabController,
                             )
                           : null,
-                      leading: Builder(
-                        builder: (context) => IconButton(
-                            icon: new Icon(
-                              Icons.menu,
-                              color: Provider.of<Controller>(context, listen: false)
-                                              .menu_index ==
-                                          "S1" ||
-                                      Provider.of<Controller>(context, listen: false)
-                                              .menu_index ==
-                                          "0" ||
-                                      Provider.of<Controller>(context, listen: false)
-                                              .menu_index ==
-                                          "1" ||
-                                      Provider.of<Controller>(context, listen: false)
-                                              .menu_index ==
-                                          "2" ||
-                                      Provider.of<Controller>(context, listen: false)
-                                              .menu_index ==
-                                          "3" ||
-                                      Provider.of<Controller>(context,
-                                                  listen: false)
-                                              .menu_index ==
-                                          "4" ||
-                                      Provider.of<Controller>(context,
-                                                  listen: false)
-                                              .menu_index ==
-                                          "5"
-                                  ? P_Settings.wavecolor
-                                  : Colors.white,
-                            ),
-                            onPressed: () async {
-                              drawerOpts.clear();
+                  leading: Builder(
+                    builder: (context) => IconButton(
+                        icon: new Icon(
+                          Icons.menu,
+                          color: Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "S1" ||
+                                  Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "0" ||
+                                  Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "1" ||
+                                  Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "2" ||
+                                  Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "3" ||
+                                  Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "4" ||
+                                  Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "5" ||
+                                  Provider.of<Controller>(context, listen: false)
+                                          .menu_index ==
+                                      "6"
+                              ? P_Settings.wavecolor
+                              : Colors.white,
+                        ),
+                        onPressed: () async {
+                          drawerOpts.clear();
 
-                              // Provider.of<Controller>(context, listen: false)
-                              //     .getCompanyData(context);
+                          // Provider.of<Controller>(context, listen: false)
+                          //     .getCompanyData(context);
 
-                              // drawerOpts.clear();
-                              print(
-                                  "drwer op---${drawerOpts.length}----${Provider.of<Controller>(context, listen: false).menuList.length}");
-                              for (var i = 0;
-                                  i <
-                                      Provider.of<Controller>(context,
-                                              listen: false)
-                                          .menuList
-                                          .length;
-                                  i++) {
-                                // var d =Provider.of<Controller>(context, listen: false).drawerItems[i];
+                          // drawerOpts.clear();
+                          print(
+                              "drwer op---${drawerOpts.length}----${Provider.of<Controller>(context, listen: false).menuList.length}");
+                          for (var i = 0;
+                              i <
+                                  Provider.of<Controller>(context,
+                                          listen: false)
+                                      .menuList
+                                      .length;
+                              i++) {
+                            // var d =Provider.of<Controller>(context, listen: false).drawerItems[i];
 
-                                drawerOpts.add(Consumer<Controller>(
-                                  builder: (context, value, child) {
-                                    // print(
-                                    //     "menulist[menu]-------${value.menuList[i]["menu_name"]}");
-                                    return ListTile(
-                                      title: Text(
-                                        value.menuList[i]["menu_name"]
-                                            .toLowerCase(),
-                                        style: GoogleFonts.aBeeZee(
-                                          // textStyle: Theme.of(context)
-                                          //     .textTheme
-                                          //     .bodyText2,
-                                          fontSize: 17,
-                                        ),
-                                      ),
-                                      // selected: i == _selectedIndex,
-                                      onTap: () {
-                                        _onSelectItem(
-                                          i,
-                                          value.menuList[i]["menu_index"],
-                                        );
-                                      },
+                            drawerOpts.add(Consumer<Controller>(
+                              builder: (context, value, child) {
+                                // print(
+                                //     "menulist[menu]-------${value.menuList[i]["menu_name"]}");
+                                return ListTile(
+                                  title: Text(
+                                    value.menuList[i]["menu_name"]
+                                        .toLowerCase(),
+                                    style: GoogleFonts.aBeeZee(
+                                      // textStyle: Theme.of(context)
+                                      //     .textTheme
+                                      //     .bodyText2,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  // selected: i == _selectedIndex,
+                                  onTap: () {
+                                    _onSelectItem(
+                                      i,
+                                      value.menuList[i]["menu_index"],
                                     );
                                   },
-                                ));
-                              }
-                              Scaffold.of(context).openDrawer();
-                            }),
-                      ),
-                      elevation: 0,
-                      // backgroundColor: P_Settings.wavecolor,
-                      // actions: [
-                      //   /////////////////// table view in app bar /////////////////
-                      //   IconButton(
-                      //       onPressed: () {
-                      //         Provider.of<Controller>(context, listen: false)
-                      //             .clearList(Provider.of<Controller>(context,
-                      //                     listen: false)
-                      //                 .queryResult);
-                      //         Navigator.of(context).push(
-                      //           PageRouteBuilder(
-                      //               opaque: false, // set to false
-                      //               pageBuilder: (_, __, ___) =>
-                      //                   QueryResultScreen()),
-                      //         );
-                      //       },
-                      //       icon: Icon(
-                      //         Icons.query_builder,
-                      //         color: Colors.green,
-                      //       )),
-                      //   IconButton(
-                      //     onPressed: () async {
-                      //       await OrderAppDB.instance
-                      //           .deleteFromTableCommonQuery(
-                      //               "returnMasterTable", "");
-                      //       await OrderAppDB.instance
-                      //           .deleteFromTableCommonQuery(
-                      //               "returnDetailTable", "");
-                      //       await OrderAppDB.instance
-                      //           .deleteFromTableCommonQuery(
-                      //               "returnBagTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("orderDetailTable", "");
-                      //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
-                      //       //     "accountHeadsTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("customerTable", "");
-                      //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
-                      //       //     "registrationTable", "");
-                      //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
-                      //       //     "staffDetailsTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("areaDetailsTable", "");
-                      //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
-                      //       //     "productDetailsTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("productsCategory", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("companyTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("orderBagTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("menuTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("settings", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("walletTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("collectionTable", "");
-                      //       // await OrderAppDB.instance
-                      //       //     .deleteFromTableCommonQuery("remarksTable", "");
-                      //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
-                      //       //     "returnMasterTable", "");
-                      //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
-                      //       //     "returnDetailTable", "");
-                      //     },
-                      //     icon: Icon(
-                      //       Icons.delete,
-                      //       color: Colors.green,
-                      //     ),
-                      //   ),
-                      //   IconButton(
-                      //     onPressed: () async {
-                      //       List<Map<String, dynamic>> list =
-                      //           await OrderAppDB.instance.getListOfTables();
-                      //       Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (context) => TableList(list: list)),
-                      //       );
-                      //     },
-                      //     icon: Icon(Icons.table_bar, color: Colors.green),
-                      //   ),
-                      // ],
-                    ),
+                                );
+                              },
+                            ));
+                          }
+                          Scaffold.of(context).openDrawer();
+                        }),
+                  ),
+                  elevation: 0,
+                  // backgroundColor: P_Settings.wavecolor,
+                  // actions: [
+                  //   /////////////////// table view in app bar /////////////////
+                  //   IconButton(
+                  //       onPressed: () {
+                  //         Provider.of<Controller>(context, listen: false)
+                  //             .clearList(Provider.of<Controller>(context,
+                  //                     listen: false)
+                  //                 .queryResult);
+                  //         Navigator.of(context).push(
+                  //           PageRouteBuilder(
+                  //               opaque: false, // set to false
+                  //               pageBuilder: (_, __, ___) =>
+                  //                   QueryResultScreen()),
+                  //         );
+                  //       },
+                  //       icon: Icon(
+                  //         Icons.query_builder,
+                  //         color: Colors.green,
+                  //       )),
+                  //   IconButton(
+                  //     onPressed: () async {
+                  //       await OrderAppDB.instance
+                  //           .deleteFromTableCommonQuery(
+                  //               "returnMasterTable", "");
+                  //       await OrderAppDB.instance
+                  //           .deleteFromTableCommonQuery(
+                  //               "returnDetailTable", "");
+                  //       await OrderAppDB.instance
+                  //           .deleteFromTableCommonQuery(
+                  //               "returnBagTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("orderDetailTable", "");
+                  //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
+                  //       //     "accountHeadsTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("customerTable", "");
+                  //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
+                  //       //     "registrationTable", "");
+                  //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
+                  //       //     "staffDetailsTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("areaDetailsTable", "");
+                  //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
+                  //       //     "productDetailsTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("productsCategory", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("companyTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("orderBagTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("menuTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("settings", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("walletTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("collectionTable", "");
+                  //       // await OrderAppDB.instance
+                  //       //     .deleteFromTableCommonQuery("remarksTable", "");
+                  //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
+                  //       //     "returnMasterTable", "");
+                  //       // await OrderAppDB.instance.deleteFromTableCommonQuery(
+                  //       //     "returnDetailTable", "");
+                  //     },
+                  //     icon: Icon(
+                  //       Icons.delete,
+                  //       color: Colors.green,
+                  //     ),
+                  //   ),
+                  //   IconButton(
+                  //     onPressed: () async {
+                  //       List<Map<String, dynamic>> list =
+                  //           await OrderAppDB.instance.getListOfTables();
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => TableList(list: list)),
+                  //       );
+                  //     },
+                  //     icon: Icon(Icons.table_bar, color: Colors.green),
+                  //   ),
+                  // ],
+                ),
 
           drawer: Drawer(
             child: LayoutBuilder(

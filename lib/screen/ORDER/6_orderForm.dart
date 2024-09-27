@@ -696,10 +696,10 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                                   return ListTile(
                                                                                     trailing: const Icon(Icons.arrow_circle_right_rounded),
                                                                                     onTap: () {
-                                                                                      Provider.of<Controller>(context, listen: false).getBalance(cid, values.custmerDetails[index]['ac_code']!, context);
+                                                                                      // Provider.of<Controller>(context, listen: false).getBalance(cid, values.custmerDetails[index]['ac_code']!, context);
                                                                                       setState(() {
-                                                                                        customertext.text = values.custmerDetails[index]['hname'];
-                                                                                        custmerId = values.custmerDetails[index]['ac_code'];
+                                                                                        customertext.text = values.custmerDetails[index]['hname'].toString().trimLeft();
+                                                                                        custmerId = values.custmerDetails[index]['ac_code'].toString().trimLeft();
                                                                                       });
                                                                                       FocusManager.instance.primaryFocus?.unfocus();
                                                                                       // Provider.of<Controller>(context, listen: false).setCustomerName(values.custmerDetails[index]['hname']);
@@ -718,7 +718,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                                                                     visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                                                                     textColor: P_Settings.wavecolor,
                                                                                     title: Text(
-                                                                                      "${values.custmerDetails[index]['hname']}",
+                                                                                      "${values.custmerDetails[index]['hname'].toString().trimLeft()}",
                                                                                       style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                                                                                     ),
 

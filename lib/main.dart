@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sqlorder24/controller/controller.dart';
 import 'package:sqlorder24/screen/NEWPAGES/nextscreen.dart';
+import 'package:sqlorder24/screen/NEWPAGES/stockreport.dart';
 import 'package:sqlorder24/screen/ORDER/0_splashScreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -177,6 +178,7 @@ class MyApp extends StatelessWidget {
       //   cid: "VC1001",
       //   type: "drawer call",
       // ),
+      // StockReport(),
       SplashScreen(),
       // NextPage(),
       // NextPage(

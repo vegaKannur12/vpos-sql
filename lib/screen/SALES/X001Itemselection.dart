@@ -576,7 +576,7 @@ class _SalesItemState extends State<SalesItem> {
                                               widget.os,
                                               0.0,
                                               s[0],
-                                              s[1],widget.branch_id
+                                              s[1],widget.branch_id,value.newList[index]["ActStock"]
                                             );
                                           }
                                         },
@@ -588,9 +588,9 @@ class _SalesItemState extends State<SalesItem> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              // mainAxisAlignment:
-                                              //     MainAxisAlignment
-                                              //         .spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Flexible(
                                                   child: Text(
@@ -616,7 +616,9 @@ class _SalesItemState extends State<SalesItem> {
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
-                                                ),
+                                                 
+                                                ), 
+                                                Text(value.newList[index]["ActStock"].toString())
                                                 // value.newList[index]
                                                 //             [
                                                 //             "qty"] ==
@@ -738,7 +740,9 @@ class _SalesItemState extends State<SalesItem> {
                                       widget.os,
                                       0.0,
                                       s[0],
-                                      s[1],widget.branch_id
+                                      s[1],widget.branch_id,
+                                      value.salesitemList2[index]["ActStock"]
+
                                     );
                                   }
                                 },
@@ -749,8 +753,8 @@ class _SalesItemState extends State<SalesItem> {
                                   //     CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      // mainAxisAlignment:
-                                      //     MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Flexible(
                                           child: Text(
@@ -764,6 +768,7 @@ class _SalesItemState extends State<SalesItem> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
+                                        Text(value.salesitemList2[index]["ActStock"].toString())
                                         // value.salesitemList2[index]
                                         //             [
                                         //             "qty"] ==

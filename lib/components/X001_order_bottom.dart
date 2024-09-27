@@ -445,7 +445,7 @@ class OrderBottomSheet {
                                                     0,branch_id);
                                             Fluttertoast.showToast(
                                               msg:
-                                                  "$item Inserted Successfully",
+                                                  "$item Added Successfully",
                                               toastLength: Toast.LENGTH_SHORT,
                                               gravity: ToastGravity.CENTER,
                                               timeInSecForIosWeb: 1,

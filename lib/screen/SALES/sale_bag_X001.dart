@@ -69,7 +69,7 @@ class _SaleCartX001State extends State<SaleCartX001> {
             listen: false)
         .salebagList
         .where(
-            (salee) => double.parse(salee["qty"]) < 0.0) // salee["qty"]< "0.0"
+            (salee) => double.parse(salee["qty"].toString().trimLeft()) < 0.0) // salee["qty"]< "0.0"
 
         .toList();
     print("Return List===$salebagReturnList");
