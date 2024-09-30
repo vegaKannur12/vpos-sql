@@ -113,15 +113,18 @@ class _MainDashboardState extends State<MainDashboard> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              InkWell(onLongPress: () async {
-                                 List<Map<String, dynamic>> list =
-                                await OrderAppDB.instance.getListOfTables();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TableList(list: list)),
-                            );
-                              },
+                              InkWell(
+                                onLongPress: () async {
+                                  List<Map<String, dynamic>> list =
+                                      await OrderAppDB.instance
+                                          .getListOfTables();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TableList(list: list)),
+                                  );
+                                },
                                 child: CircleAvatar(
                                   backgroundColor: Colors.black,
                                   radius: 15,
@@ -160,6 +163,11 @@ class _MainDashboardState extends State<MainDashboard> {
                             ],
                           ),
                         ),
+                        value.brNm.toString().toLowerCase() == "null" ||
+                                value.brNm.toString().isEmpty ||
+                                value.brNm.toString() == ""
+                            ? Container()
+                            : Text(value.brNm.toString()),
                         Row(
                           children: [
                             IconButton(
@@ -184,58 +192,58 @@ class _MainDashboardState extends State<MainDashboard> {
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 4.0, left: 8, right: 8),
-                          child: Card(
-                            color: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              side: BorderSide(
-                                color: Color.fromARGB(255, 192, 191, 191),
-                                width: 1.0,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListTile(
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  color: Color.fromARGB(255, 4, 93, 167),
-                                ),
-                                leading: CircleAvatar(
-                                  // backgroundColor: Colors.,
-                                  backgroundImage: AssetImage(
-                                    "asset/order.png",
-                                  ),
-                                ),
-                                title: Text(
-                                  "SALE ORDER",
-                                  style: GoogleFonts.oswald(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),
-                                ),
-                                onTap: () async {
-                                  // if (widget.type == "return from cartList") {
-                                  //   return OrderForm(
-                                  //       widget.areaName!, "sale order");
-                                  // } else if (widget.type ==
-                                  //     "Product return confirmed") {
-                                  //   return OrderForm(widget.areaName!, "");
-                                  // } else {
-                                  //   return OrderForm("", "");
-                                  // }
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              OrderForm("", "sale order")));
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(
+                        //       top: 4.0, left: 8, right: 8),
+                        //   child: Card(
+                        //     color: Colors.white,
+                        //     elevation: 0,
+                        //     shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(15.0),
+                        //       side: BorderSide(
+                        //         color: Color.fromARGB(255, 192, 191, 191),
+                        //         width: 1.0,
+                        //       ),
+                        //     ),
+                        //     child: Padding(
+                        //       padding: const EdgeInsets.all(8.0),
+                        //       child: ListTile(
+                        //         trailing: Icon(
+                        //           Icons.arrow_forward_ios_rounded,
+                        //           color: Color.fromARGB(255, 4, 93, 167),
+                        //         ),
+                        //         leading: CircleAvatar(
+                        //           // backgroundColor: Colors.,
+                        //           backgroundImage: AssetImage(
+                        //             "asset/order.png",
+                        //           ),
+                        //         ),
+                        //         title: Text(
+                        //           "SALE ORDER",
+                        //           style: GoogleFonts.oswald(
+                        //               fontWeight: FontWeight.w600,
+                        //               fontSize: 14),
+                        //         ),
+                        //         onTap: () async {
+                        //           // if (widget.type == "return from cartList") {
+                        //           //   return OrderForm(
+                        //           //       widget.areaName!, "sale order");
+                        //           // } else if (widget.type ==
+                        //           //     "Product return confirmed") {
+                        //           //   return OrderForm(widget.areaName!, "");
+                        //           // } else {
+                        //           //   return OrderForm("", "");
+                        //           // }
+                        //           Navigator.push(
+                        //               context,
+                        //               MaterialPageRoute(
+                        //                   builder: (context) =>
+                        //                       OrderForm("", "sale order")));
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         Padding(
                           padding: const EdgeInsets.only(
                               top: 4.0, left: 8, right: 8),

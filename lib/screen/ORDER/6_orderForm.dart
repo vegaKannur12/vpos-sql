@@ -246,7 +246,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: size.height * 0.01),
+                                // SizedBox(height: size.height * 0.001),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 30.0, right: 15),
@@ -400,7 +400,7 @@ class _OrderFormState extends State<OrderForm> with TickerProviderStateMixin {
                                           alignment: Alignment.topLeft,
                                           child: Material(
                                             child: SizedBox(
-                                              height: size.height * 0.2,
+                                              height: size.height * 0.4,
                                               width: size.width * 0.84,
                                               child: ListView.builder(
                                                 shrinkWrap: true,

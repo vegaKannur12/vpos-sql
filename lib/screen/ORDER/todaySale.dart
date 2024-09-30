@@ -421,133 +421,134 @@ class _TodaySaleState extends State<TodaySale> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           // Icon(Icons.delete),
-                                          value.todaySalesList[index]
-                                                      ["cancel"] ==
-                                                  1
-                                              ? Container()
-                                              : InkWell(
-                                                  onTap: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return AlertDialog(
-                                                          backgroundColor:
-                                                              Colors.white,
+                                          // value.todaySalesList[index]
+                                          //             ["cancel"] ==
+                                          //         1
+                                          //     ?
+                                               Container(),
+                                              // : InkWell(
+                                              //     onTap: () {
+                                              //       showDialog(
+                                              //         context: context,
+                                              //         builder: (BuildContext
+                                              //             context) {
+                                              //           return AlertDialog(
+                                              //             backgroundColor:
+                                              //                 Colors.white,
 
-                                                          // title: new Text("Alert!!"),
-                                                          content: new Text(
-                                                            "Cancel Bill No : ${value.todaySalesList[index]["sale_Num"]} ??",
-                                                            style: TextStyle(
-                                                                fontSize: 13),
-                                                          ),
-                                                          actions: <Widget>[
-                                                            new ElevatedButton(
-                                                              child: new Text(
-                                                                  "OK"),
-                                                              onPressed:
-                                                                  () async {
-                                                                String?
-                                                                    gen_area =
-                                                                    Provider.of<Controller>(
-                                                                            context,
-                                                                            listen:
-                                                                                false)
-                                                                        .areaId;
-                                                                print(
-                                                                    "gen area----$gen_area");
-                                                                String
-                                                                    gen_condition;
-                                                                if (gen_area !=
-                                                                    null) {
-                                                                  gen_condition =
-                                                                      " and accountHeadsTable.area_id=$gen_area";
-                                                                } else {
-                                                                  gen_condition =
-                                                                      " ";
-                                                                }
-                                                                cancel_time = DateFormat(
-                                                                        'yyyy-MM-dd HH:mm:ss')
-                                                                    .format(DateTime
-                                                                        .now());
+                                              //             // title: new Text("Alert!!"),
+                                              //             content: new Text(
+                                              //               "Cancel Bill No : ${value.todaySalesList[index]["sale_Num"]} ??",
+                                              //               style: TextStyle(
+                                              //                   fontSize: 13),
+                                              //             ),
+                                              //             actions: <Widget>[
+                                              //               new ElevatedButton(
+                                              //                 child: new Text(
+                                              //                     "OK"),
+                                              //                 onPressed:
+                                              //                     () async {
+                                              //                   String?
+                                              //                       gen_area =
+                                              //                       Provider.of<Controller>(
+                                              //                               context,
+                                              //                               listen:
+                                              //                                   false)
+                                              //                           .areaId;
+                                              //                   print(
+                                              //                       "gen area----$gen_area");
+                                              //                   String
+                                              //                       gen_condition;
+                                              //                   if (gen_area !=
+                                              //                       null) {
+                                              //                     gen_condition =
+                                              //                         " and accountHeadsTable.area_id=$gen_area";
+                                              //                   } else {
+                                              //                     gen_condition =
+                                              //                         " ";
+                                              //                   }
+                                              //                   cancel_time = DateFormat(
+                                              //                           'yyyy-MM-dd HH:mm:ss')
+                                              //                       .format(DateTime
+                                              //                           .now());
 
-                                                                await OrderAppDB
-                                                                    .instance
-                                                                    .upadteCommonQuery(
-                                                                        "salesMasterTable",
-                                                                        "status = 0 , cancel = 1 , cancel_staff ='${sid}' , cancel_dateTime= '${cancel_time}' ",
-                                                                        "sales_id='${value.todaySalesList[index]["sales_id"]}'");
-                                                                Fluttertoast.showToast(
-                                                                    msg:
-                                                                        "Bill No : ${value.todaySalesList[index]["sale_Num"]} Cancelled",
-                                                                    toastLength:
-                                                                        Toast
-                                                                            .LENGTH_SHORT,
-                                                                    gravity: ToastGravity
-                                                                        .CENTER,
-                                                                    timeInSecForIosWeb:
-                                                                        1,
-                                                                    textColor:
-                                                                        Colors
-                                                                            .white,
-                                                                    fontSize:
-                                                                        14.0);
-                                                                List<String> s =
-                                                                    cancel_time!
-                                                                        .split(
-                                                                            " ");
-                                                                Provider.of<Controller>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .todaySales(
-                                                                        s[0],
-                                                                        "",
-                                                                        "");
-                                                                Provider.of<Controller>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .dashboardSummery(
-                                                                        sid!,
-                                                                        formattedDate!,
-                                                                        "",
-                                                                        context);
+                                              //                   await OrderAppDB
+                                              //                       .instance
+                                              //                       .upadteCommonQuery(
+                                              //                           "salesMasterTable",
+                                              //                           "status = 0 , cancel = 1 , cancel_staff ='${sid}' , cancel_dateTime= '${cancel_time}' ",
+                                              //                           "sales_id='${value.todaySalesList[index]["sales_id"]}'");
+                                              //                   Fluttertoast.showToast(
+                                              //                       msg:
+                                              //                           "Bill No : ${value.todaySalesList[index]["sale_Num"]} Cancelled",
+                                              //                       toastLength:
+                                              //                           Toast
+                                              //                               .LENGTH_SHORT,
+                                              //                       gravity: ToastGravity
+                                              //                           .CENTER,
+                                              //                       timeInSecForIosWeb:
+                                              //                           1,
+                                              //                       textColor:
+                                              //                           Colors
+                                              //                               .white,
+                                              //                       fontSize:
+                                              //                           14.0);
+                                              //                   List<String> s =
+                                              //                       cancel_time!
+                                              //                           .split(
+                                              //                               " ");
+                                              //                   Provider.of<Controller>(
+                                              //                           context,
+                                              //                           listen:
+                                              //                               false)
+                                              //                       .todaySales(
+                                              //                           s[0],
+                                              //                           "",
+                                              //                           "");
+                                              //                   Provider.of<Controller>(
+                                              //                           context,
+                                              //                           listen:
+                                              //                               false)
+                                              //                       .dashboardSummery(
+                                              //                           sid!,
+                                              //                           formattedDate!,
+                                              //                           "",
+                                              //                           context);
 
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                            new ElevatedButton(
-                                                              child: new Text(
-                                                                  "Cancel"),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        "Cancel",
-                                                        style: TextStyle(
-                                                            color: Colors.red),
-                                                      ),
-                                                      Icon(
-                                                        Icons.close,
-                                                        color: Colors.red,
-                                                        size: 18,
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
+                                              //                   Navigator.of(
+                                              //                           context)
+                                              //                       .pop();
+                                              //                 },
+                                              //               ),
+                                              //               new ElevatedButton(
+                                              //                 child: new Text(
+                                              //                     "Cancel"),
+                                              //                 onPressed: () {
+                                              //                   Navigator.of(
+                                              //                           context)
+                                              //                       .pop();
+                                              //                 },
+                                              //               ),
+                                              //             ],
+                                              //           );
+                                              //         },
+                                              //       );
+                                              //     },
+                                              //     child: Row(
+                                              //       children: [
+                                              //         Text(
+                                              //           "Cancel",
+                                              //           style: TextStyle(
+                                              //               color: Colors.red),
+                                              //         ),
+                                              //         Icon(
+                                              //           Icons.close,
+                                              //           color: Colors.red,
+                                              //           size: 18,
+                                              //         )
+                                              //       ],
+                                              //     ),
+                                              //   ),
                                           value.todaySalesList[index]
                                                       ["cancel"] ==
                                                   1

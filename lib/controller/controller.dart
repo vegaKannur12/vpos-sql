@@ -244,6 +244,7 @@ class Controller extends ChangeNotifier {
   String? dfcusCode;
   String? dfCusName;
   String? br_id;
+  String? brNm;
   // List<TextEditingController> rateController = [];
   List<TextEditingController> salesqty = [];
   List<TextEditingController> orderqty = [];
@@ -757,6 +758,20 @@ class Controller extends ChangeNotifier {
     }
   }
 
+  generateSalesInvoice(BuildContext context) async {
+    try {
+      var res = await SqlConn.readData("FLT_GENERATE_SALES_INVOICE");
+      print("FLT_GENERATE_SALES_INVOICE---$res");
+    } on PlatformException catch (e) {
+      debugPrint("PlatformException brnch: ${e.message}");
+      debugPrint("not connected..brnch..");
+      // Navigator.pop(context);
+      // await showConnectionDialog(context, "TCAT", e.toString());
+    } catch (e) {
+      print("An unexpected error occurred: $e");
+    }
+  }
+
   initSecondaryDb(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? db = prefs.getString("conDb");
@@ -1003,142 +1018,346 @@ class Controller extends ChangeNotifier {
 /////////////////////////////////MASTER DATA/////////////////////////
   getMasterData(
       String datavalue, BuildContext context, int index, String page) async {
-    // await initSecondaryDb(context);
-    var res;
-    DateTime date = DateTime.now();
-    List s = [];
-    String? formattedDate;
-    SideMenu2 sidemenuModel = SideMenu2();
-    print("Data Value----${datavalue}---");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? br_id1 = prefs.getString("br_id");
+    int con = await initSecondaryDb(context);
+    if (con == 1) {
+      var res;
+      DateTime date = DateTime.now();
+      List s = [];
+      String? formattedDate;
+      SideMenu2 sidemenuModel = SideMenu2();
+      print("Data Value----${datavalue}---");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? br_id1 = prefs.getString("br_id");
 
-    String branch_id;
-    if (br_id1 == null || br_id1 == " " || br_id1 == "null") {
-      branch_id = " ";
-    } else {
-      branch_id = br_id1;
-    }
+      String branch_id;
+      if (br_id1 == null || br_id1 == " " || br_id1 == "null") {
+        branch_id = " ";
+      } else {
+        branch_id = br_id1;
+      }
 
-    try {
-      isDownloaded = true;
-      isCompleted = true;
-      isLoading = true;
-      notifyListeners();
-      if (page != "company details") {
+      try {
+        isDownloaded = true;
+        isCompleted = true;
         isLoading = true;
         notifyListeners();
-      }
-      // if (page == "all") {
-      //   isDownloaded = true;
-      //   isCompleted = true;
-      //   isLoading = true;
-      //   notifyListeners();
-      // }
-      print("Query=====${"FLT_GET_MASTER_DATA '$datavalue','$branch_id'"}");
-      var res = await SqlConn.readData(
-          "FLT_GET_MASTER_DATA '$datavalue','$branch_id'");
-      List<dynamic> map = jsonDecode(res);
-      print("Master details----$datavalue------${res.runtimeType}");
-      print("Master details-----$datavalue-----${res}");
-      print("Master decodedRespons ${map.runtimeType}");
-      if (datavalue == "staff") {
-        var restaff;
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery("staffDetailsTable", "");
-        print("getStaffDetails...............${map}");
-        for (var staff in map) {
-          print("object--${staff["PWD"].runtimeType}");
-          //  print("object--${staff["TRACK"].runtimeType}");
-          staffModel = StaffDetails.fromJson(staff);
-
-          restaff = await OrderAppDB.instance.insertStaffDetails(staffModel);
-        }
-        print("inserted staff ${restaff}");
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
+        if (page != "company details") {
+          isLoading = true;
           notifyListeners();
         }
-      } else if (datavalue == "settings") {
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery("settingsTable", "");
-        print("settings map ${map}");
+        // if (page == "all") {
+        //   isDownloaded = true;
+        //   isCompleted = true;
+        //   isLoading = true;
+        //   notifyListeners();
+        // }
+        print("Query=====${"FLT_GET_MASTER_DATA '$datavalue','$branch_id'"}");
+        var res = await SqlConn.readData(
+            "FLT_GET_MASTER_DATA '$datavalue','$branch_id'");
+        List<dynamic> map = jsonDecode(res);
+        print("Master details----$datavalue------${res.runtimeType}");
+        print("Master details-----$datavalue-----${res}");
+        print("Master decodedRespons ${map.runtimeType}");
+        if (datavalue == "staff") {
+          var restaff;
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("staffDetailsTable", "");
+          print("getStaffDetails...............${map}");
+          for (var staff in map) {
+            print("object--${staff["PWD"].runtimeType}");
+            //  print("object--${staff["TRACK"].runtimeType}");
+            staffModel = StaffDetails.fromJson(staff);
 
-        SettingsModel settingsModal;
-        // walletModal.
-        for (var item in map) {
-          print("object-1-${item["set_id"].runtimeType}");
-          print("object-2-${item["set_code"].runtimeType}");
-          print("object-3-${item["set_value"].runtimeType}");
-          print("object-4-${item["set_type"].runtimeType}");
-          settingsModal = SettingsModel.fromJson(item);
-          await OrderAppDB.instance.insertsettingsTable(settingsModal);
-        }
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
-          notifyListeners();
-        }
-      } else if (datavalue == "area") {
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery('areaDetailsTable', "");
+            restaff = await OrderAppDB.instance.insertStaffDetails(staffModel);
+          }
+          print("inserted staff ${restaff}");
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "settings") {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("settingsTable", "");
+          print("settings map ${map}");
 
-        for (var staffarea in map) {
-          print("staffarea----${staffarea.length}");
-          staffArea = StaffArea.fromJson(staffarea);
-          var staffar =
-              await OrderAppDB.instance.insertStaffAreaDetails(staffArea);
-          print("inserted ${staffar}");
-        }
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
-          notifyListeners();
-        }
-      } else if (datavalue == "customer") {
-        print("costomer map ${map}");
+          SettingsModel settingsModal;
+          // walletModal.
+          for (var item in map) {
+            print("object-1-${item["set_id"].runtimeType}");
+            print("object-2-${item["set_code"].runtimeType}");
+            print("object-3-${item["set_value"].runtimeType}");
+            print("object-4-${item["set_type"].runtimeType}");
+            settingsModal = SettingsModel.fromJson(item);
+            await OrderAppDB.instance.insertsettingsTable(settingsModal);
+          }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "area") {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery('areaDetailsTable', "");
 
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery("accountHeadsTable", "");
+          for (var staffarea in map) {
+            print("staffarea----${staffarea.length}");
+            staffArea = StaffArea.fromJson(staffarea);
+            var staffar =
+                await OrderAppDB.instance.insertStaffAreaDetails(staffArea);
+            print("inserted ${staffar}");
+          }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "customer") {
+          print("costomer map ${map}");
 
-        for (var ahead in map) {
-          print("ahead------${ahead}");
-          accountHead = AccountHead.fromJson(ahead);
-          var account =
-              await OrderAppDB.instance.insertAccoundHeads(accountHead);
-        }
-        formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
-        s = formattedDate!.split(" ");
-        String? us = await prefs.getString('st_username');
-        String? pwd = await prefs.getString('st_pwd');
-        String? sid = prefs.getString("sid");
-        if (us != null && pwd != null) {
-          if (areaidFrompopup != null) {
-            await dashboardSummery(sid!, s[0], areaidFrompopup!, context);
-          } else {
-            if (userType == "staff") {
-              print("satfff");
-              await dashboardSummery(sid!, s[0], "", context);
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("accountHeadsTable", "");
+
+          for (var ahead in map) {
+            print("ahead------${ahead}");
+            accountHead = AccountHead.fromJson(ahead);
+            var account =
+                await OrderAppDB.instance.insertAccoundHeads(accountHead);
+          }
+          formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
+          s = formattedDate!.split(" ");
+          String? us = await prefs.getString('st_username');
+          String? pwd = await prefs.getString('st_pwd');
+          String? sid = prefs.getString("sid");
+          if (us != null && pwd != null) {
+            if (areaidFrompopup != null) {
+              await dashboardSummery(sid!, s[0], areaidFrompopup!, context);
+            } else {
+              if (userType == "staff") {
+                print("satfff");
+                await dashboardSummery(sid!, s[0], "", context);
+              }
             }
           }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "products") {
+          if (map.isNotEmpty) {
+            await OrderAppDB.instance
+                .deleteFromTableCommonQuery("productDetailsTable", "");
+
+            print("productDetailsTable--map ${map}");
+            for (var pro in map) {
+              proDetails = ProductDetails.fromJson(pro);
+              var product =
+                  await OrderAppDB.instance.insertProductDetails(proDetails);
+            }
+          } else {
+            print("empty---[]");
+          }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "itemcategory") {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("productsCategory", "");
+
+          print("productsCategory map ${map}");
+          ProductsCategoryModel category;
+          for (var cat in map) {
+            category = ProductsCategoryModel.fromJson(cat);
+            var product =
+                await OrderAppDB.instance.insertProductCategory(category);
+          }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "itemcompany") {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("companyTable", "");
+          // print("body ${body}");
+
+          print("company map ${map}");
+          ProductCompanymodel productCompany;
+          for (var proComp in map) {
+            productCompany = ProductCompanymodel.fromJson(proComp);
+            var product =
+                await OrderAppDB.instance.insertProductCompany(productCompany);
+          }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "wallet") {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("walletTable", "");
+
+          print("wallet map ${map}");
+          WalletModal walletModal;
+          // walletModal.
+          for (var item in map) {
+            walletModal = WalletModal.fromJson(item);
+            await OrderAppDB.instance.insertwalletTable(walletModal);
+            // menuList.add(menuItem);
+          }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "units") {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("productUnits", "");
+          print("productUnits  --- ${map}");
+          ProductUnitsModel productUnits;
+          for (var prounit in map) {
+            productUnits = ProductUnitsModel.fromJson(prounit);
+            var product =
+                await OrderAppDB.instance.insertProductUnit(productUnits);
+          }
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        } else if (datavalue == "stock") {
+          print("stock Map --- ${map}");
+
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery('stockDetailsTable', "");
+          StockDetails stk;
+          for (var stok in map) {
+            print(
+                "stockdata---${stok["bid"].runtimeType},${stok["stock"].runtimeType} ");
+            print("stock----${stok.length}");
+            stk = StockDetails.fromJson(stok);
+            var stkkdet = await OrderAppDB.instance.insertStockDetails(stk);
+            print("inserted stock ${stkkdet}");
+          }
+
+          await OrderAppDB.instance
+              .upadteCommonQuery("salesMasterTable", "sflag=1", "sflag=0");
+
+          if (page != "all") {
+            isDownloaded = false;
+            isDown[index] = true;
+            isLoading = false;
+            notifyListeners();
+          }
         }
-        if (page != "all") {
+        if (page != "company details") {
+          isLoading = false;
+          notifyListeners();
+        }
+        if (page == "all") {
           isDownloaded = false;
           isDown[index] = true;
           isLoading = false;
           notifyListeners();
         }
-      } else if (datavalue == "products") {
+        notifyListeners();
+      } catch (e) {
+        print(e);
+        return null;
+      }
+    } else {
+      isLoading = false;
+      notifyListeners();
+      CustomSnackbar snackbar = CustomSnackbar();
+      snackbar.showSnackbar(context, "Error Connecting Database", "");
+      print("NOT connected 2nd");
+    }
+  }
+
+////////////////////////////////////////GETMASTER ALL////////////////////////////
+  getMasterDataALL(BuildContext context, int index, String page) async {
+    int con = await initSecondaryDb(context);
+    if (con == 1) {
+      var res;
+      DateTime date = DateTime.now();
+      List s = [];
+      String? formattedDate;
+
+      print("Data Value----${index}---");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? br_id1 = prefs.getString("br_id");
+      String branch_id;
+      if (br_id1 == null || br_id1 == " " || br_id1 == "null") {
+        branch_id = " ";
+      } else {
+        branch_id = br_id1;
+      }
+
+      try {
+        isDownloaded = true;
+        isCompleted = true;
+        isLoading = true;
+        notifyListeners();
+        //////////////////////////////customer//////////////////////
+        var res = await SqlConn.readData(
+            "FLT_GET_MASTER_DATA 'customer','$branch_id'");
+        List<dynamic> map = jsonDecode(res);
+        print("Master details------customer----${res.runtimeType}");
+        print("Master details------customer---${res}");
+        print("Master decodedRespons------customer------ ${map}");
         if (map.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("accountHeadsTable", "");
+
+          for (var ahead in map) {
+            print("ahead------${ahead}");
+            accountHead = AccountHead.fromJson(ahead);
+            var account =
+                await OrderAppDB.instance.insertAccoundHeads(accountHead);
+          }
+          formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
+          s = formattedDate!.split(" ");
+          String? us = await prefs.getString('st_username');
+          String? pwd = await prefs.getString('st_pwd');
+          String? sid = prefs.getString("sid");
+          if (us != null && pwd != null) {
+            if (areaidFrompopup != null) {
+              await dashboardSummery(sid!, s[0], areaidFrompopup!, context);
+            } else {
+              if (userType == "staff") {
+                print("satfff");
+                await dashboardSummery(sid!, s[0], "", context);
+              }
+            }
+          }
+        } else {
+          print("empty---[]");
+        }
+        ////////////////////////products////////////////////////////////
+        var res1 = await SqlConn.readData(
+            "FLT_GET_MASTER_DATA 'products','$branch_id'");
+        List<dynamic> map1 = jsonDecode(res1);
+        print("Master details------products----${res1.runtimeType}");
+        print("Master details-----products----${res1}");
+        print("Master decodedRespons-----products--- ${map1}");
+        if (map1.isNotEmpty) {
           await OrderAppDB.instance
               .deleteFromTableCommonQuery("productDetailsTable", "");
 
-          print("productDetailsTable--map ${map}");
-          for (var pro in map) {
+          print("productDetailsTable--map ${map1}");
+          for (var pro in map1) {
             proDetails = ProductDetails.fromJson(pro);
             var product =
                 await OrderAppDB.instance.insertProductDetails(proDetails);
@@ -1146,122 +1365,199 @@ class Controller extends ChangeNotifier {
         } else {
           print("empty---[]");
         }
-        if (page != "all") {
+        ////////////////////////itemcategory///////////////////////////////
+        var res2 = await SqlConn.readData(
+            "FLT_GET_MASTER_DATA 'itemcategory','$branch_id'");
+        List<dynamic> map2 = jsonDecode(res2);
+        print("Master details----itemcategory------${res2.runtimeType}");
+        print("Master details-----itemcategory----${res2}");
+        print("Master decodedRespons---itemcategory ${map2}");
+        if (map2.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("productsCategory", "");
+
+          ProductsCategoryModel category;
+          for (var cat in map2) {
+            category = ProductsCategoryModel.fromJson(cat);
+            var product =
+                await OrderAppDB.instance.insertProductCategory(category);
+          }
+        } else {
+          print("empty---[]");
+        }
+
+        ////////////////////////itemcompany///////////////////////////////
+        var res3 = await SqlConn.readData(
+            "FLT_GET_MASTER_DATA 'itemcompany','$branch_id'");
+        List<dynamic> map3 = jsonDecode(res3);
+        print("Master details----itemcompany------${res3.runtimeType}");
+        print("Master details-----itemcompany----${res3}");
+        print("Master decodedRespons---itemcompany ${map3}");
+        if (map3.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("companyTable", "");
+
+          ProductCompanymodel productCompany;
+          for (var proComp in map3) {
+            productCompany = ProductCompanymodel.fromJson(proComp);
+            var product =
+                await OrderAppDB.instance.insertProductCompany(productCompany);
+          }
+        } else {
+          print("empty---[]");
+        }
+
+        ///////////////////////////wallet///////////////////////////////
+        var res4 =
+            await SqlConn.readData("FLT_GET_MASTER_DATA 'wallet','$branch_id'");
+        List<dynamic> map4 = jsonDecode(res4);
+        print("Master details----wallet------${res4.runtimeType}");
+        print("Master details-----wallet----${res4}");
+        print("Master decodedRespons---wallet ${map4}");
+        if (map4.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("walletTable", "");
+          WalletModal walletModal;
+          // walletModal.
+          for (var item in map4) {
+            walletModal = WalletModal.fromJson(item);
+            await OrderAppDB.instance.insertwalletTable(walletModal);
+            // menuList.add(menuItem);
+          }
+        } else {
+          print("empty---[]");
+        }
+        ///////////////////////////area//////////////////////////////
+        var res5 =
+            await SqlConn.readData("FLT_GET_MASTER_DATA 'area','$branch_id'");
+        List<dynamic> map5 = jsonDecode(res5);
+        print("Master details----area------${res5.runtimeType}");
+        print("Master details-----area----${res5}");
+        print("Master decodedRespons---area ${map5}");
+        if (map5.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery('areaDetailsTable', "");
+
+          for (var staffarea in map5) {
+            print("staffarea----${staffarea.length}");
+            staffArea = StaffArea.fromJson(staffarea);
+            var staffar =
+                await OrderAppDB.instance.insertStaffAreaDetails(staffArea);
+            print("inserted ${staffar}");
+          }
+        } else {
+          print("empty---[]");
+        }
+        ///////////////////////////staff///////////////////////////////
+        var res6 =
+            await SqlConn.readData("FLT_GET_MASTER_DATA 'staff','$branch_id'");
+        List<dynamic> map6 = jsonDecode(res6);
+        print("Master details----staff------${res6.runtimeType}");
+        print("Master details-----staff----${res6}");
+        print("Master decodedRespons---staff ${map6}");
+        if (map6.isNotEmpty) {
+          var restaff;
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("staffDetailsTable", "");
+
+          for (var staff in map6) {
+            print("object--${staff["PWD"].runtimeType}");
+            //  print("object--${staff["TRACK"].runtimeType}");
+            staffModel = StaffDetails.fromJson(staff);
+
+            restaff = await OrderAppDB.instance.insertStaffDetails(staffModel);
+          }
+        } else {
+          print("empty---[]");
+        }
+        ///////////////////////////units///////////////////////////////
+        var res7 =
+            await SqlConn.readData("FLT_GET_MASTER_DATA 'units','$branch_id'");
+        List<dynamic> map7 = jsonDecode(res7);
+        print("Master details----units------${res7.runtimeType}");
+        print("Master details-----units----${res7}");
+        print("Master decodedRespons---units ${map7}");
+        if (map7.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("productUnits", "");
+
+          ProductUnitsModel productUnits;
+          for (var prounit in map7) {
+            productUnits = ProductUnitsModel.fromJson(prounit);
+            var product =
+                await OrderAppDB.instance.insertProductUnit(productUnits);
+          }
+        } else {
+          print("empty---[]");
+        }
+        ///////////////////////////settings///////////////////////////////
+        var res8 = await SqlConn.readData(
+            "FLT_GET_MASTER_DATA 'settings','$branch_id'");
+        List<dynamic> map8 = jsonDecode(res8);
+        print("Master details----settings------${res8.runtimeType}");
+        print("Master details-----settings----${res8}");
+        print("Master decodedRespons---settings ${map8}");
+        if (map8.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery("settingsTable", "");
+          SettingsModel settingsModal;
+          // walletModal.
+          for (var item in map8) {
+            print("object-1-${item["set_id"].runtimeType}");
+            print("object-2-${item["set_code"].runtimeType}");
+            print("object-3-${item["set_value"].runtimeType}");
+            print("object-4-${item["set_type"].runtimeType}");
+            settingsModal = SettingsModel.fromJson(item);
+            await OrderAppDB.instance.insertsettingsTable(settingsModal);
+          }
+        } else {
+          print("empty---[]");
+        }
+
+        /// ///////////////////////////stock///////////////////////////////
+        ///
+        var res9 =
+            await SqlConn.readData("FLT_GET_MASTER_DATA 'stock','$branch_id'");
+        List<dynamic> map9 = jsonDecode(res9);
+        print("Master details----stock------${res9.runtimeType}");
+        print("Master details-----stock----${res9}");
+        print("Master decodedRespons---stock ${map9}");
+        if (map9.isNotEmpty) {
+          await OrderAppDB.instance
+              .deleteFromTableCommonQuery('stockDetailsTable', "");
+          StockDetails stk;
+          for (var stok in map9) {
+            // print(
+            //     "stockdata---${stok["bid"].runtimeType},${stok["stock"].runtimeType} ");
+            // print("stock----${stok.length}");
+            stk = StockDetails.fromJson(stok);
+            var stkkdet = await OrderAppDB.instance.insertStockDetails(stk);
+            print("inserted stock ${stkkdet}");
+          }
+
+          await OrderAppDB.instance
+              .upadteCommonQuery("salesMasterTable", "sflag=1", "sflag=0");
+        } else {
+          print("empty---[]");
+        }
+        ////////////////////////////////////
+        if (page == "all") {
           isDownloaded = false;
           isDown[index] = true;
           isLoading = false;
           notifyListeners();
         }
-      } else if (datavalue == "itemcategory") {
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery("productsCategory", "");
-
-        print("productsCategory map ${map}");
-        ProductsCategoryModel category;
-        for (var cat in map) {
-          category = ProductsCategoryModel.fromJson(cat);
-          var product =
-              await OrderAppDB.instance.insertProductCategory(category);
-        }
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
-          notifyListeners();
-        }
-      } else if (datavalue == "itemcompany") {
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery("companyTable", "");
-        // print("body ${body}");
-
-        print("company map ${map}");
-        ProductCompanymodel productCompany;
-        for (var proComp in map) {
-          productCompany = ProductCompanymodel.fromJson(proComp);
-          var product =
-              await OrderAppDB.instance.insertProductCompany(productCompany);
-        }
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
-          notifyListeners();
-        }
-      } else if (datavalue == "wallet") {
-        await OrderAppDB.instance.deleteFromTableCommonQuery("walletTable", "");
-
-        print("wallet map ${map}");
-        WalletModal walletModal;
-        // walletModal.
-        for (var item in map) {
-          walletModal = WalletModal.fromJson(item);
-          await OrderAppDB.instance.insertwalletTable(walletModal);
-          // menuList.add(menuItem);
-        }
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
-          notifyListeners();
-        }
-      } else if (datavalue == "units") {
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery("productUnits", "");
-        print("productUnits  --- ${map}");
-        ProductUnitsModel productUnits;
-        for (var prounit in map) {
-          productUnits = ProductUnitsModel.fromJson(prounit);
-          var product =
-              await OrderAppDB.instance.insertProductUnit(productUnits);
-        }
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
-          notifyListeners();
-        }
-      } else if (datavalue == "stock") {
-        print("stock Map --- ${map}");
-
-        await OrderAppDB.instance
-            .deleteFromTableCommonQuery('stockDetailsTable', "");
-        StockDetails stk;
-        for (var stok in map) {
-          print(
-              "stockdata---${stok["bid"].runtimeType},${stok["stock"].runtimeType} ");
-          print("stock----${stok.length}");
-          stk = StockDetails.fromJson(stok);
-          var stkkdet = await OrderAppDB.instance.insertStockDetails(stk);
-          print("inserted stock ${stkkdet}");
-        }
-
-        // List<Map<String, dynamic>> sfRes = await OrderAppDB.instance
-        // .selectAllcommon('salesMasterTable', "sflag=0");
-        // returnMasterTable
-        await OrderAppDB.instance
-            .upadteCommonQuery("salesMasterTable", "sflag=1", "sflag=0");
-
-        if (page != "all") {
-          isDownloaded = false;
-          isDown[index] = true;
-          isLoading = false;
-          notifyListeners();
-        }
-      }
-      if (page != "company details") {
-        isLoading = false;
         notifyListeners();
+      } catch (e) {
+        print(e);
+        return null;
       }
-      if (page == "all") {
-        isDownloaded = false;
-        isDown[index] = true;
-        isLoading = false;
-        notifyListeners();
-      }
+    } else {
+      isLoading = false;
       notifyListeners();
-    } catch (e) {
-      print(e);
-      return null;
+      CustomSnackbar snackbar = CustomSnackbar();
+      snackbar.showSnackbar(context, "Error Connecting Database", "");
+      print("NOT connected 2nd");
     }
   }
 
@@ -2420,6 +2716,12 @@ class Controller extends ChangeNotifier {
   }
 
 //////////////////////////////////UPDATE ////////////////////
+  geTBrnchNm() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    brNm = await prefs.getString("br_name");
+    notifyListeners();
+  }
+
   /////////////////////////////updateqty/////////////////////
   updateQty(String qty, int cartrowno, String customerId, String rate) async {
     List<Map<String, dynamic>> res = await OrderAppDB.instance
@@ -2573,14 +2875,16 @@ class Controller extends ChangeNotifier {
 /////////////////////////////////////////////////////////////
   selectStockandProdfromDB(BuildContext context) async {
     isLoading = true;
-    prodstockList.clear();
+
     notifyListeners();
     var res = await OrderAppDB.instance.selectStockandProd_22();
     print("res stock list----${res}");
+    prodstockList.clear();
     for (var item in res) {
       prodstockList.add(item);
     }
     print("prodstockList ----${prodstockList}");
+    print("prodstockList ----${prodstockList.length}");
     isLoading = false;
     notifyListeners();
   }
@@ -2615,12 +2919,13 @@ class Controller extends ChangeNotifier {
   getArea(String? sid) async {
     String areaName;
     print("staff...............${sid}");
+    // areaList.clear();
     try {
       areaList = await OrderAppDB.instance.getArea(sid!);
       print("areaList----${areaList}");
       print("areaList before ----${areDetails}");
       areDetails.clear();
-
+      notifyListeners();
       for (var item in areaList) {
         areDetails.add(item);
       }
@@ -3075,7 +3380,9 @@ class Controller extends ChangeNotifier {
   setCname() async {
     final prefs = await SharedPreferences.getInstance();
     String? came = prefs.getString("cname");
+    String? brd = prefs.getString("br_name");
     cname = came;
+    brNm = brd;
     notifyListeners();
   }
 
@@ -4037,108 +4344,126 @@ class Controller extends ChangeNotifier {
   // }
   uploadOrdersDataSQL(
       String cid, BuildContext context, int? index, String page) async {
-    await initSecondaryDb(context);
-    int f = 0;
-    List<Map<String, dynamic>> resultQuery = [];
-    Map<String, dynamic> omDet = {};
-    Map<String, dynamic> ommastr = {};
-    String ommastrString = "";
-    String omDetString = "";
-    int itemoid;
-    String itemseris;
+    int con = await initSecondaryDb(context);
+    if (con == 1) {
+      int f = 0;
+      List<Map<String, dynamic>> resultQuery = [];
+      Map<String, dynamic> omDet = {};
+      Map<String, dynamic> ommastr = {};
+      String ommastrString = "";
+      String omDetString = "";
+      int itemoid;
+      String itemseris;
 
-    notifyListeners();
-    var result = await OrderAppDB.instance.selectMasterTable();
-    String jsonE = jsonEncode(result);
-    var jsonMstr = jsonDecode(jsonE);
-    if (result.length > 0) {
-      isUpload = true;
-      for (var item in jsonMstr) {
-        var result =
-            await OrderAppDB.instance.selectMasterTableByID(item["oid"]);
-        String jsonE = jsonEncode(result);
-        var jsonDe = jsonDecode(jsonE);
-        for (var item in jsonDe) {
-          ommastr = item;
-          print("O Master---$ommastr");
-          itemoid = item["oid"];
-          itemseris = item["ser"];
-          DateTime now = DateTime.now();
-          DateFormat formatter = DateFormat('dd-MMM-yyyy');
-          String dateNow = formatter.format(now);
+      notifyListeners();
+      var result = await OrderAppDB.instance.selectMasterTable();
+      String jsonE = jsonEncode(result);
+      var jsonMstr = jsonDecode(jsonE);
+      if (result != null) {
+        isUpload = true;
+        isLoading = true;
+        notifyListeners();
+        for (var item in jsonMstr) {
+          var result =
+              await OrderAppDB.instance.selectMasterTableByID(item["oid"]);
+          String jsonE = jsonEncode(result);
+          var jsonDe = jsonDecode(jsonE);
+          for (var item in jsonDe) {
+            ommastr = item;
+            print("O Master---$ommastr");
+            itemoid = item["oid"];
+            itemseris = item["ser"];
+            DateTime now = DateTime.now();
+            DateFormat formatter = DateFormat('dd-MMM-yyyy');
+            String dateNow = formatter.format(now);
 
-          String dateTimeString = ommastr['odate'];
-          DateTime parsedDate = DateTime.parse(dateTimeString);
-          String formattedDate = DateFormat('dd-MMM-yyyy').format(parsedDate);
-          ommastrString =
-              "('$itemseris','$itemseris',${ommastr['oid']},'$formattedDate','${ommastr['cuid']}','${ommastr['sid']}',${ommastr['aid']},0,'$dateNow',0,'','${ommastr['brid']}')";
-          print(ommastrString);
-          omDetString = "";
+            String dateTimeString = ommastr['odate'];
+            DateTime parsedDate = DateTime.parse(dateTimeString);
+            String formattedDate = DateFormat('dd-MMM-yyyy').format(parsedDate);
+            ommastrString =
+                "('$itemseris','$itemseris',${ommastr['oid']},'$formattedDate','${ommastr['cuid']}','${ommastr['sid']}',${ommastr['aid']},0,'$dateNow',0,'','${ommastr['brid']}')";
+            print(ommastrString);
+            omDetString = "";
 
-          int i = 0;
+            int i = 0;
 
-          resultQuery =
-              await OrderAppDB.instance.selectDetailTable(item["oid"]);
-          // String jsonE = jsonEncode(resultQuery);
-          // var jsonDe = jsonDecode(jsonE);
-          print("res details--$resultQuery");
-          if (resultQuery.isNotEmpty) {
-            // for (int i = 1; i <= resultQuery.length; i++) {
-            print("rs len ${resultQuery.length}");
-            for (var item in resultQuery) {
-              i++;
-              print("--------$i");
-              omDet = item;
-              print("O Detail---$omDet");
-              String omtemp =
-                  "('$itemseris',$i,'${omDet['code']}','${omDet['item']}',${omDet['qty']},'${omDet['packing']}','${omDet['rate']}','${omDet['unit']}',0,'')";
-              if (omDetString.isEmpty) {
-                omDetString = omtemp;
-              } else {
-                omDetString = '$omDetString,$omtemp';
+            resultQuery =
+                await OrderAppDB.instance.selectDetailTable(item["oid"]);
+            // String jsonE = jsonEncode(resultQuery);
+            // var jsonDe = jsonDecode(jsonE);
+            print("res details--$resultQuery");
+            if (resultQuery.isNotEmpty) {
+              // for (int i = 1; i <= resultQuery.length; i++) {
+              print("rs len ${resultQuery.length}");
+              for (var item in resultQuery) {
+                i++;
+                print("--------$i");
+                omDet = item;
+                print("O Detail---$omDet");
+                String omtemp =
+                    "('$itemseris',$i,'${omDet['code']}','${omDet['item']}',${omDet['qty']},'${omDet['packing']}','${omDet['rate']}','${omDet['unit']}',0,'')";
+                if (omDetString.isEmpty) {
+                  omDetString = omtemp;
+                } else {
+                  omDetString = '$omDetString,$omtemp';
+                }
+                print("O Detail String---$omDetString");
               }
-              print("O Detail String---$omDetString");
-            }
 
-            ///Code to upload
-            var res2 = await SqlConn.writeData(
-                "DELETE from [order_master] WHERE [o_id]=$itemoid AND [o_invoice_id]='$itemseris'");
-            var res22 = await SqlConn.writeData(
-                "DELETE from  [order_details] WHERE [o_invoice_id]='$itemseris'");
-            print("delete result---$res2 , $res22");
-            var res = await SqlConn.writeData(
-                "INSERT INTO [order_master]([o_invoice_id],[os],[o_id],[o_entry_date],[o_customer_id],[staff_id],[area_id],[o_status],[sys_date],[statusid],[TRANSFERONLINE],[br_id]) VALUES $ommastrString");
+              ///Code to upload
+              var res2 = await SqlConn.writeData(
+                  "DELETE from [order_master] WHERE [o_id]=$itemoid AND [o_invoice_id]='$itemseris'");
+              var res22 = await SqlConn.writeData(
+                  "DELETE from  [order_details] WHERE [o_invoice_id]='$itemseris'");
+              print("delete result---$res2 , $res22");
+              var res = await SqlConn.writeData(
+                  "INSERT INTO [order_master]([o_invoice_id],[os],[o_id],[o_entry_date],[o_customer_id],[staff_id],[area_id],[o_status],[sys_date],[statusid],[TRANSFERONLINE],[br_id]) VALUES $ommastrString");
 
-            var resdet = await SqlConn.writeData(
-                "INSERT INTO [order_details]([o_invoice_id],[row_num],[code],[item],[qty],[packing],[rate],[unit],[status],[UPDATED]) VALUES $omDetString");
-            f = 1;
-            print("qryresordermastrr-----$f---$res");
-            print("qryresorderdet-----$f---$resdet");
-            var res1 = await SqlConn.readData("SELECT * from [order_master]");
-            print("order matr res---$res1");
-            var res111 =
-                await SqlConn.readData("SELECT * from [order_details]");
-            print("order details res---$res111");
-            isUpload = false;
-            if (page == "upload page") {
-              isUp[index!] = true;
+              var resdet = await SqlConn.writeData(
+                  "INSERT INTO [order_details]([o_invoice_id],[row_num],[code],[item],[qty],[packing],[rate],[unit],[status],[UPDATED]) VALUES $omDetString");
+              f = 1;
+              print("qryresordermastrr-----$f---$res");
+              print("qryresorderdet-----$f---$resdet");
+              var res1 = await SqlConn.readData("SELECT * from [order_master]");
+              print("order matr res---$res1");
+              var res111 =
+                  await SqlConn.readData("SELECT * from [order_details]");
+              print("order details res---$res111");
+
+              if (page == "upload page") {
+                isUp[index!] = true;
+              }
+              if (f == 1) {
+                await OrderAppDB.instance.upadteCommonQuery("orderMasterTable",
+                    "status='${itemoid}'", "order_id=${itemoid}");
+                isUpload = false;
+                isUp[index!] = true;
+                isLoading = false;
+                notifyListeners();
+              } else {
+                isUpload = false;
+                isUp[index!] = true;
+                isLoading = false;
+                notifyListeners();
+                snackbar.showSnackbar(context, "Upload Failed..", "");
+              }
+              // }
             }
-            if (f == 1) {
-              await OrderAppDB.instance.upadteCommonQuery("orderMasterTable",
-                  "status='${itemoid}'", "order_id=${itemoid}");
-            } else {
-              snackbar.showSnackbar(context, "Upload Failed..", "");
-            }
-            // }
           }
         }
+      } else {
+        isUp[index!] = false;
+        notifyListeners();
+        snackbar.showSnackbar(context, "Nothing to upload!!!", "");
       }
-    } else {
-      isUp[index!] = false;
       notifyListeners();
-      snackbar.showSnackbar(context, "Nothing to upload!!!", "");
+    } else {
+      isLoading = false;
+      notifyListeners();
+      CustomSnackbar snackbar = CustomSnackbar();
+      snackbar.showSnackbar(context, "Error Connecting Database", "");
+      print("NOT connected 2nd");
     }
-    notifyListeners();
   }
   ////////////////////////upload salesdata////////////////////////////////////////
   // uploadSalesData(
@@ -4194,98 +4519,118 @@ class Controller extends ChangeNotifier {
   // }
   uploadSalesDatasql(
       String cid, BuildContext context, int? index, String page) async {
-    await initSecondaryDb(context);
-    int f = 0;
-    List<Map<String, dynamic>> resultQuery = [];
-    Map<String, dynamic> omDet = {};
-    Map<String, dynamic> ommastr = {};
-    String ommastrString = "";
-    String omDetString = "";
-    int itemsid;
-    String itembillno;
-    notifyListeners();
-    var result = await OrderAppDB.instance.selectSalesMasterTable();
-    String jsonE = jsonEncode(result);
-    var jsonMstr = jsonDecode(jsonE);
-    if (result.length > 0) {
-      isUpload = true;
-      for (var item in jsonMstr) {
-        var result =
-            await OrderAppDB.instance.selectSalesMasterTableByID(item["s_id"]);
-        String jsonE = jsonEncode(result);
-        var jsonDe = jsonDecode(jsonE);
-        for (var item in jsonDe) {
-          ommastr = item;
-          print("O Master---$ommastr");
-          itembillno = item["billno"];
-          itemsid = item["s_id"];
-          DateTime now = DateTime.now();
-          DateFormat formatter = DateFormat('dd-MMM-yyyy');
-          String dateNow = formatter.format(now);
-
-          String dateTimeString = ommastr['sdate'];
-          DateTime parsedDate = DateTime.parse(dateTimeString);
-          String formattedDate = DateFormat('dd-MMM-yyyy').format(parsedDate);
-          ommastrString =
-              "('${ommastr['billno']}',${ommastr['s_id']},'${ommastr['billno']}','${ommastr['cuid']}','$formattedDate','${ommastr['staff_id']}',${ommastr['aid']},'${ommastr['cus_type']}','${ommastr['gross_tot']}','${ommastr['dis_tot']}','${ommastr['ces_tot']}','${ommastr['tax_tot']}',${ommastr['p_mode']},0,'${ommastr['rounding']}','${ommastr['net_amt']}','$dateNow',${ommastr['cancel_flag']},'${ommastr['cancel_time']}','${ommastr['cancel_staff']}',0,0,${ommastr['brid']})";
-          print(ommastrString);
-          omDetString = "";
-          resultQuery =
-              await OrderAppDB.instance.selectSalesDetailTable(item["s_id"]);
-          String jsonE = jsonEncode(resultQuery);
+    int con = await initSecondaryDb(context);
+    if (con == 1) {
+      int f = 0;
+      List<Map<String, dynamic>> resultQuery = [];
+      Map<String, dynamic> omDet = {};
+      Map<String, dynamic> ommastr = {};
+      String ommastrString = "";
+      String omDetString = "";
+      int itemsid;
+      String itembillno;
+      notifyListeners();
+      var result = await OrderAppDB.instance.selectSalesMasterTable();
+      String jsonE = jsonEncode(result);
+      var jsonMstr = jsonDecode(jsonE);
+      if (result.isNotEmpty) {
+        isUpload = true;
+        isLoading = true;
+        for (var item in jsonMstr) {
+          var result = await OrderAppDB.instance
+              .selectSalesMasterTableByID(item["s_id"]);
+          String jsonE = jsonEncode(result);
           var jsonDe = jsonDecode(jsonE);
-          if (resultQuery.isNotEmpty) {
-            for (var item in jsonDe) {
-              omDet = item;
-              print("O Detail---$omDet");
-              String omtemp =
-                  "('$itembillno',$itemsid,'${omDet['code']}','${omDet['hsn']}','${omDet['item']}',${omDet['qty']},'${omDet['packing']}','${omDet['rate']}','${omDet['unit']}','${omDet['unit_rate']}','${omDet['gross']}','${omDet['disc_per']}','${omDet['disc_amt']}','${omDet['cgst_per']}','${omDet['cgst_amt']}','${omDet['sgst_per']}','${omDet['sgst_amt']}','${omDet['igst_per']}','${omDet['igst_amt']}','${omDet['tax_per']}','${omDet['tax_amt']}','${omDet['ces_per']}','${omDet['ces_amt']}','${omDet['net_amt']}',0,'')";
-              if (omDetString.isEmpty) {
-                omDetString = omtemp;
-              } else {
-                omDetString = '$omDetString,$omtemp';
+          for (var item in jsonDe) {
+            ommastr = item;
+            print("O Master---$ommastr");
+            itembillno = item["billno"];
+            itemsid = item["s_id"];
+            DateTime now = DateTime.now();
+            DateFormat formatter = DateFormat('dd-MMM-yyyy');
+            String dateNow = formatter.format(now);
+
+            String dateTimeString = ommastr['sdate'];
+            DateTime parsedDate = DateTime.parse(dateTimeString);
+            String formattedDate = DateFormat('dd-MMM-yyyy').format(parsedDate);
+            ommastrString =
+                "('${ommastr['billno']}',${ommastr['s_id']},'${ommastr['billno']}','${ommastr['cuid']}','$formattedDate','${ommastr['staff_id']}',${ommastr['aid']},'${ommastr['cus_type']}','${ommastr['gross_tot']}','${ommastr['dis_tot']}','${ommastr['ces_tot']}','${ommastr['tax_tot']}',${ommastr['p_mode']},0,'${ommastr['rounding']}','${ommastr['net_amt']}','$dateNow',${ommastr['cancel_flag']},'${ommastr['cancel_time']}','${ommastr['cancel_staff']}',0,0,${ommastr['brid']})";
+            print(ommastrString);
+            omDetString = "";
+            resultQuery =
+                await OrderAppDB.instance.selectSalesDetailTable(item["s_id"]);
+            String jsonE = jsonEncode(resultQuery);
+            var jsonDe = jsonDecode(jsonE);
+            if (resultQuery.isNotEmpty) {
+              for (var item in jsonDe) {
+                omDet = item;
+                print("O Detail---$omDet");
+                String omtemp =
+                    "('$itembillno',$itemsid,'${omDet['code']}','${omDet['hsn']}','${omDet['item']}',${omDet['qty']},'${omDet['packing']}','${omDet['rate']}','${omDet['unit']}','${omDet['unit_rate']}','${omDet['gross']}','${omDet['disc_per']}','${omDet['disc_amt']}','${omDet['cgst_per']}','${omDet['cgst_amt']}','${omDet['sgst_per']}','${omDet['sgst_amt']}','${omDet['igst_per']}','${omDet['igst_amt']}','${omDet['tax_per']}','${omDet['tax_amt']}','${omDet['ces_per']}','${omDet['ces_amt']}','${omDet['net_amt']}',0,'')";
+                if (omDetString.isEmpty) {
+                  omDetString = omtemp;
+                } else {
+                  omDetString = '$omDetString,$omtemp';
+                }
+                print("O Detail String---$omDetString");
               }
-              print("O Detail String---$omDetString");
-            }
 
-            ///Code to upload
+              ///Code to upload
 
-            var res2 = await SqlConn.writeData(
-                "DELETE from [sale_master] WHERE [s_id]=$itemsid AND [s_invoice_id]='$itembillno'");
-            var res22 = await SqlConn.writeData(
-                "DELETE from  [sale_details] WHERE [s_invoice_id]='$itembillno'");
-            print("delete result---$res2 , $res22");
-            var res = await SqlConn.writeData(
-                "INSERT INTO [sale_master]([s_invoice_id],[s_id],[bill_no],[s_customer_id],[s_entry_date],[staff_id],[area_id],[s_cus_type],[s_gross_total],[s_dis_total],[s_ces_total],[s_tax_tot],[trans_mode],[c_option],[rounding],[net_amt],[sys_date],[cancel_flag],[cancel_time],[cancel_staff],[statusid],[TRANSFERONLINE],[br_id]) VALUES $ommastrString");
+              var res2 = await SqlConn.writeData(
+                  "DELETE from [sale_master] WHERE [s_id]=$itemsid AND [s_invoice_id]='$itembillno'");
+              var res22 = await SqlConn.writeData(
+                  "DELETE from  [sale_details] WHERE [s_invoice_id]='$itembillno'");
+              print("delete result---$res2 , $res22");
+              var res = await SqlConn.writeData(
+                  "INSERT INTO [sale_master]([s_invoice_id],[s_id],[bill_no],[s_customer_id],[s_entry_date],[staff_id],[area_id],[s_cus_type],[s_gross_total],[s_dis_total],[s_ces_total],[s_tax_tot],[trans_mode],[c_option],[rounding],[net_amt],[sys_date],[cancel_flag],[cancel_time],[cancel_staff],[statusid],[TRANSFERONLINE],[br_id]) VALUES $ommastrString");
 
-            var resdet = await SqlConn.writeData(
-                "INSERT INTO [sale_details]([s_invoice_id],[slno],[code],[hsn],[item],[qty],[packing],[rate],[unit],[unit_rate],[gross],[disc_per],[disc_amt],[cgst_per],[cgst_amt],[sgst_per],[sgst_amt],[igst_per],[igst_amt],[tax_per],[tax_amt],[ces_per],[ces_amt],[net_amt],[status],[UPDATED]) VALUES $omDetString");
-            f = 1;
-            print("qryres-----$f---$res");
-            print("qryrespo-----$f---$resdet");
-            var res1 = await SqlConn.readData("SELECT * from [sale_master]");
-            print("sales matr res---$res1");
-            var res111 = await SqlConn.readData("SELECT * from [sale_details]");
-            print("sales details res---$res111");
-            isUpload = false;
-            if (page == "upload page") {
-              isUp[index!] = true;
-            }
-            if (f == 1) {
-              await OrderAppDB.instance.upadteCommonQuery(
-                  "salesMasterTable", "status = 1", "sales_id='${itemsid}'");
-            } else {
-              snackbar.showSnackbar(context, "Upload Failed..", "");
+              var resdet = await SqlConn.writeData(
+                  "INSERT INTO [sale_details]([s_invoice_id],[slno],[code],[hsn],[item],[qty],[packing],[rate],[unit],[unit_rate],[gross],[disc_per],[disc_amt],[cgst_per],[cgst_amt],[sgst_per],[sgst_amt],[igst_per],[igst_amt],[tax_per],[tax_amt],[ces_per],[ces_amt],[net_amt],[status],[UPDATED]) VALUES $omDetString");
+              f = 1;
+              print("qryres-----$f---$res");
+              print("qryrespo-----$f---$resdet");
+              var res1 = await SqlConn.readData("SELECT * from [sale_master]");
+              print("sales matr res---$res1");
+              var res111 =
+                  await SqlConn.readData("SELECT * from [sale_details]");
+              print("sales details res---$res111");
+              isUpload = false;
+              if (page == "upload page") {
+                isUp[index!] = true;
+              }
+              if (f == 1) {
+                await OrderAppDB.instance.upadteCommonQuery(
+                    "salesMasterTable", "status = 1", "sales_id='${itemsid}'");
+
+                await generateSalesInvoice(context);
+                isUpload = false;
+                isUp[index!] = true;
+                isLoading = false;
+                notifyListeners();
+              } else {
+                isUpload = false;
+                isUp[index!] = true;
+                isLoading = false;
+                notifyListeners();
+                snackbar.showSnackbar(context, "Upload Failed..", "");
+              }
             }
           }
         }
+      } else {
+        isUp[index!] = false;
+        notifyListeners();
+        snackbar.showSnackbar(context, "Nothing to upload!!!", "");
       }
-    } else {
-      isUp[index!] = false;
       notifyListeners();
-      snackbar.showSnackbar(context, "Nothing to upload!!!", "");
+    } else {
+      isLoading = false;
+      notifyListeners();
+      CustomSnackbar snackbar = CustomSnackbar();
+      snackbar.showSnackbar(context, "Error Connecting Database", "");
+      print("NOT connected 2nd");
     }
-    notifyListeners();
   }
 
   /////////////////////////upload customer/////////////////////////////////////////
@@ -4526,68 +4871,87 @@ class Controller extends ChangeNotifier {
   //   print("haicollection");
   // }
   uploadCollectionDataSQL(BuildContext context, int? index, String page) async {
-    await initSecondaryDb(context);
-    Map<String, dynamic> colmastr = {};
-    String collString = "";
-    String itemser = "";
-    int itemcolid = 0;
-    int itemphid = 0;
-    int f = 0;
-    var result = await OrderAppDB.instance.uploadCollections();
-    String jsonE = jsonEncode(result);
-    var jsonMstr = jsonDecode(jsonE);
-    print("collection result......$result");
-    if (result.length > 0) {
-      isUpload = true;
-      isLoading = true;
-      if (page == "upload page") {
-        isUp[index!] = true;
-      }
-      notifyListeners();
-      for (var item in jsonMstr) {
-        colmastr = item;
-        itemser = item["cseries"];
-        itemphid = item["phid"];
-        itemcolid = item["colid"];
-        String dateTimeString = colmastr['cdate'];
-        DateTime parsedDate = DateTime.parse(dateTimeString);
-        String formattedDate = DateFormat('dd-MMM-yyyy').format(parsedDate);
-        String dateTimeString1 = colmastr['edate'];
-        DateTime parsedDate1 = DateTime.parse(dateTimeString);
-        String formattedDate1 = DateFormat('dd-MMM-yyyy').format(parsedDate);
-        collString =
-            "('${colmastr['cseries']}','${colmastr['cseries']}',${colmastr['phid']},'$formattedDate','${colmastr['cid']}','${colmastr['cmode']}','${colmastr['camt']}','${colmastr['cdisc']}','${colmastr['cremark']}','${colmastr['sid']}',${colmastr['cflag']},'${colmastr['dstaff']}','$formattedDate1',0,0,${colmastr['brid']})"; //${ommastr['s_id']}
+    int con = await initSecondaryDb(context);
+    if (con == 1) {
+      Map<String, dynamic> colmastr = {};
+      String collString = "";
+      String itemser = "";
+      int itemcolid = 0;
+      int itemphid = 0;
+      int f = 0;
+      var result = await OrderAppDB.instance.uploadCollections();
+      String jsonE = jsonEncode(result);
+      var jsonMstr = jsonDecode(jsonE);
+      print("collection result......$result");
+      if (result.isNotEmpty) {
+        isUpload = true;
+        isLoading = true;
+        if (page == "upload page") {
+          isUp[index!] = true;
+        }
+        notifyListeners();
+        for (var item in jsonMstr) {
+          colmastr = item;
+          itemser = item["cseries"];
+          itemphid = item["phid"];
+          itemcolid = item["colid"];
+          String dateTimeString = colmastr['cdate'];
+          DateTime parsedDate = DateTime.parse(dateTimeString);
+          String formattedDate = DateFormat('dd-MMM-yyyy').format(parsedDate);
+          String dateTimeString1 = colmastr['edate'];
+          DateTime parsedDate1 = DateTime.parse(dateTimeString);
+          String formattedDate1 = DateFormat('dd-MMM-yyyy').format(parsedDate);
+          collString =
+              "('${colmastr['cseries']}','${colmastr['cseries']}',${colmastr['phid']},'$formattedDate','${colmastr['cid']}','${colmastr['cmode']}','${colmastr['camt']}','${colmastr['cdisc']}','${colmastr['cremark']}','${colmastr['sid']}',${colmastr['cflag']},'${colmastr['dstaff']}','$formattedDate1',0,0,${colmastr['brid']})"; //${ommastr['s_id']}
 
-        print("col string----$collString");
-        //Code to upload
-        var res2 = await SqlConn.writeData(
-            "DELETE from [collection] WHERE [c_uid]='$itemser'");
-        var rescol = await SqlConn.writeData(
-            "INSERT INTO [collection] ([c_uid],[collection_series],[collection_id],[collection_date],[customer_id],[collection_mode],[collection_amt],[collection_disc],[collection_remarks],[staff_id],[cancel_flag],[delete_staff],[entry_date],[statusid],[TRANSFERONLINE],[br_id]) VALUES $collString");
-        f = 1;
+          print("col string----$collString");
+          //Code to upload
+          var res2 = await SqlConn.writeData(
+              "DELETE from [collection] WHERE [c_uid]='$itemser'");
+          var rescol = await SqlConn.writeData(
+              "INSERT INTO [collection] ([c_uid],[collection_series],[collection_id],[collection_date],[customer_id],[collection_mode],[collection_amt],[collection_disc],[collection_remarks],[staff_id],[cancel_flag],[delete_staff],[entry_date],[statusid],[TRANSFERONLINE],[br_id]) VALUES $collString");
+          f = 1;
 
-        print("qryrespo-----$f---$rescol");
-        var res1 = await SqlConn.readData("SELECT * from [collection]");
-        print("collection matr res---$res1");
-        isUpload = false;
+          print("qryrespo-----$f---$rescol");
+          var res1 = await SqlConn.readData("SELECT * from [collection]");
+          print("collection matr res---$res1");
+
+          notifyListeners();
+
+          if (f == 1) {
+            print("update data1.......");
+            await OrderAppDB.instance.upadteCommonQuery("collectionTable",
+                "rec_status='$itemcolid'", "rec_row_num='$itemphid'");
+            isUpload = false;
+            isUp[index!] = true;
+            isLoading = false;
+            notifyListeners();
+          } else {
+            isUpload = false;
+            isUp[index!] = true;
+            isLoading = false;
+            notifyListeners();
+            snackbar.showSnackbar(context, "Upload Failed..", "");
+          }
+        }
+        notifyListeners();
+      } 
+      else 
+      {
         isUp[index!] = false;
         notifyListeners();
-
-        if (f == 1) {
-          print("update data1.......");
-          await OrderAppDB.instance.upadteCommonQuery("collectionTable",
-              "rec_status='$itemcolid'", "rec_row_num='$itemphid'");
-        } else {
-          snackbar.showSnackbar(context, "Upload Failed..", "");
-        }
+        snackbar.showSnackbar(context, "Nothing to upload!!!", "");
       }
       notifyListeners();
-    } else {
-      isUp[index!] = false;
+    } 
+    else 
+    {
+      isLoading = false;
       notifyListeners();
-      snackbar.showSnackbar(context, "Nothing to upload!!!", "");
+      CustomSnackbar snackbar = CustomSnackbar();
+      snackbar.showSnackbar(context, "Error Connecting Database", "");
+      print("NOT connected 2nd");
     }
-    notifyListeners();
   }
   // getProductItems(String table) async {
   //   productName.clear();
@@ -5587,11 +5951,12 @@ class Controller extends ChangeNotifier {
 
     for (int i = 0; i < branch_List.length; i++) {
       if (branch_List[i]["BR_ID"].toString() == s) {
-        branch_name = branch_List[i]["BR_NAME"];
+        branch_name = branch_List[i]["BR_NAME"].toString().trimLeft();
         br_id = s;
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("br_id", br_id!);
         prefs.setString("br_name", branch_name!);
+        print("barnch====$branch_name ---$br_id");
         notifyListeners();
         br_addr_map = {
           "br_id": br_id!,

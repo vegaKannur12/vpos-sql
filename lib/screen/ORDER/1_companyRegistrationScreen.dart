@@ -75,7 +75,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _getDeviceID();
     deletemenu();
     initPlatformState();
-    codeController.text = "VEGADEMOAXVO";
+    // codeController.text = "VEGADEMOAXVO";
     // phoneController.text = "7688987654";
   }
 
@@ -102,20 +102,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
-        appBar: AppBar(actions: [
-           IconButton(
-              onPressed: () async {
-                List<Map<String, dynamic>> list =
-                    await OrderAppDB.instance.getListOfTables();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TableList(list: list)),
-                );
-              },
-              icon: Icon(Icons.table_bar),
-            ),
-        ],),
+        // appBar: AppBar(actions: [
+          //  IconButton(
+          //     onPressed: () async {
+          //       List<Map<String, dynamic>> list =
+          //           await OrderAppDB.instance.getListOfTables();
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => TableList(list: list)),
+          //       );
+          //     },
+          //     icon: Icon(Icons.table_bar),
+          //   ),
+        // ],),
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         body: InkWell(

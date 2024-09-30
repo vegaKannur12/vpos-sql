@@ -154,50 +154,50 @@ class _DownloadedPageState extends State<DownloadedPage> {
                                                   "Download All") {
                                                 Provider.of<Controller>(context,
                                                         listen: false)
-                                                    .getMasterData("customer",
+                                                    .getMasterDataALL(
                                                         context, index, "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("products",
-                                                        context, index, "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData(
-                                                        "itemcategory",
-                                                        context,
-                                                        index,
-                                                        "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData(
-                                                        "itemcompany",
-                                                        context,
-                                                        index,
-                                                        "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("wallet",
-                                                        context, index, "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("area",
-                                                        context, index, "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("staff",
-                                                        context, index, "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("units",
-                                                        context, index, "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("settings",
-                                                        context, index, "all");
-                                                         Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getMasterData("stock",
-                                                        context, 0, "all");               
+                                                        //  Provider.of<Controller>(context,
+                                                        // listen: false)
+                                                    // .getMasterData("products",
+                                                    //     context, index, "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData(
+                                                    //     "itemcategory",
+                                                    //     context,
+                                                    //     index,
+                                                    //     "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData(
+                                                    //     "itemcompany",
+                                                    //     context,
+                                                    //     index,
+                                                    //     "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData("wallet",
+                                                    //     context, index, "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData("area",
+                                                    //     context, index, "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData("staff",
+                                                    //     context, index, "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData("units",
+                                                    //     context, index, "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData("settings",
+                                                    //     context, index, "all");
+                                                    //      Provider.of<Controller>(context,
+                                                    //     listen: false)
+                                                    // .getMasterData("stock",
+                                                    //     context, 0, "all");               
                                               }
 
                                               if (downloadItems[index] ==

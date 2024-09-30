@@ -16,12 +16,12 @@ class Uploaddata extends StatefulWidget {
 class _UploaddataState extends State<Uploaddata> {
   // String? cid;
   List<String> uploadItems = [
-    "Upload Orders",
+    // "Upload Orders",
     "Upload Sales",
     // "Upload Customer",
     // "Upload Stock Return",
-    "Upload Collection",
-    "Upload Stock"
+    "Upload Collection"
+    // "Upload Stock"
     // "Upload Remarks"
   ];
   @override
@@ -87,16 +87,16 @@ class _UploaddataState extends State<Uploaddata> {
                                       : value.isUp[index]
                                           ? null
                                           : () async {
-                                              if (uploadItems[index] ==
-                                                  "Upload Orders") {
-                                                Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .uploadOrdersDataSQL(
-                                                        widget.cid,
-                                                        context,
-                                                        index,
-                                                        "upload page");
-                                              }
+                                              // if (uploadItems[index] ==
+                                              //     "Upload Orders") {
+                                              //   Provider.of<Controller>(context,
+                                              //           listen: false)
+                                              //       .uploadOrdersDataSQL(
+                                              //           widget.cid,
+                                              //           context,
+                                              //           index,
+                                              //           "upload page");
+                                              // }
                                               // if (uploadItems[index] ==
                                               //     "Upload Stock Return") {
                                               //   Provider.of<Controller>(context,
@@ -135,8 +135,8 @@ class _UploaddataState extends State<Uploaddata> {
                                                         "upload page");
                                                 //     .getProductCategory(cid!, "");
                                               }
-                                              if (uploadItems[index] ==
-                                                  "Upload Stock") {
+                                              // if (uploadItems[index] ==
+                                              //     "Upload Stock") {
                                                 // Provider.of<Controller>(context,
                                                 //         listen: false)
                                                 //     .uploadCollectionData(
@@ -144,7 +144,7 @@ class _UploaddataState extends State<Uploaddata> {
                                                 //         index,
                                                 //         "upload page");
                                                 //     .getProductCategory(cid!, "");
-                                              }
+                                              // }
                                               // if (uploadItems[index] ==
                                               //     "Upload Remarks") {
                                               //   Provider.of<Controller>(context,

@@ -69,6 +69,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   String? os;
   bool val = true;
   String? userType;
+  String? brid;
+  String? brNm;
   bool? isautodownload;
   // String menu_index = "";
   // List defaultitems = ["upload data", "download page", "logout"];
@@ -98,15 +100,20 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     // Provider.of<Controller>(context, listen: false).postRegistration("RONPBQ9AD5D",context);
     // TODO: implement initState
     print("returned---");
+  
     super.initState();
     // Provider.of<Controller>(context, listen: false)
     //     .selectStockandProdfromDB(context);
+    
     Provider.of<Controller>(context, listen: false).fetchMenusFromMenuTable();
-
+      
+   
     // Provider.of<Controller>(context, listen: false).getMasterData("stock", context, 0, "");
     drawerOpts.clear();
     print(
         "menu from splash------${Provider.of<Controller>(context, listen: false).menu_index}");
+        Provider.of<Controller>(context, listen: false).setCname();
+        Provider.of<Controller>(context, listen: false).geTBrnchNm();
     // print(Provider.of<Controller>(context, listen: false).firstMenu);
     // if (Provider.of<Controller>(context, listen: false).firstMenu != null) {
     //   Provider.of<Controller>(context, listen: false).menu_index =
@@ -126,8 +133,9 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     } else {
       gen_condition = " ";
     }
+    
     getCompaniId();
-
+  
     Provider.of<Controller>(context, listen: false).setCname();
     Provider.of<Controller>(context, listen: false).setSname();
     _tabController = TabController(
@@ -172,11 +180,21 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     cid = prefs.getString("cid");
     os = prefs.getString("os");
     userType = prefs.getString("userType");
+    await Provider.of<Controller>(context, listen: false).geTBrnchNm();
+    brNm=prefs.getString("br_name");
+    // brid = prefs.getString("userType");
+    // String? br_id1 = prefs.getString("br_id");
+
+    // if (br_id1 == null || br_id1 == " " || br_id1 == "null") {
+    //   brid = " ";
+    // } else {
+    //   brid = br_id1;
+    // }
     // firstMenu = prefs.getString("firstMenu");
     // Provider.of<Controller>(context, listen: false).menu_index = firstMenu;
     // menu_index = firstMenu!;
     sid = prefs.getString("sid");
-    print("sid...cid  menu_index $sid...$cid");
+    print("sid...cid  menu_index $sid...$cid.....$brid----$brNm");
     print("formattedDate...$formattedDate");
     print("dashboard init");
     print("${widget.type}");
@@ -194,7 +212,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     if (userType == "admin") {
       Provider.of<Controller>(context, listen: false).getArea(" ");
     } else if (userType == "staff") {
-      if (sid != null) {
+      if (sid != null) { 
         Provider.of<Controller>(context, listen: false).getArea(sid!);
       }
     }
@@ -214,7 +232,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           Provider.of<Controller>(context, listen: false).areaidFrompopup!,
           _key.currentContext!);
     } else {
-      if (userType == "staff") {
+      if (userType == "staff") { 
         Provider.of<Controller>(context, listen: false)
             .dashboardSummery(sid!, s[0], "", _key.currentContext!);
       }
@@ -237,9 +255,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
     switch (pos) {
       case "S1":
         {
+         
           print("djs");
           _tabController!.animateTo((0));
-
+          
           return new MainDashboard(
             context: context,
           );
@@ -372,6 +391,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
               .todaySales(s[0], " ", "history pending");
           return new UploadPending();
         }
+
       case "4":
         {
           Provider.of<Controller>(context, listen: false).setDate(s[0], "");
@@ -387,6 +407,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
       //         .todayOrder(s[0], gen_condition!);
       //     return new TodaysOrder();
       //   }
+
       case "5":
         {
           Provider.of<Controller>(context, listen: false).setDate(s[0], "");
@@ -394,6 +415,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
               .todayCollection(s[0], "");
           return TodayCollection();
         }
+        
       case "6":
         {
           Provider.of<Controller>(context, listen: false).setDate(s[0], "");
@@ -685,6 +707,46 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                         }),
                   ),
                   elevation: 0,
+                  // actions: [
+                  //   // getCompaniId(),
+                  //   brNm.toString().toLowerCase() == "null" ||
+                  //          brNm.toString().isEmpty || brNm.toString()==""
+                  //       ? Container()
+                  //       : Padding(
+                  //             padding: const EdgeInsets.all(8.0),
+                  //             child: Container(
+                  //                 decoration: BoxDecoration(
+                  //                     borderRadius: BorderRadius.circular(15),
+                  //                     border: Border.all(color: Colors.black)),
+                  //                 child: Padding(
+                  //                   padding: const EdgeInsets.all(5),
+                  //                   child: Text(
+                  //                       brNm.toString().toLowerCase() == "null" ||
+                  //                             brNm.toString().isEmpty
+                  //                           ? ""
+                  //                           : brNm.toString()),
+                  //                 )),
+                  //           )
+                  //       // Consumer<Controller>(
+                  //       //   builder: (BuildContext context, Controller value, Widget? child) {
+                  //       //     // value.geTBrnchNm();
+                  //       //     return Padding(
+                  //       //       padding: const EdgeInsets.all(8.0),
+                  //       //       child: Container(
+                  //       //           decoration: BoxDecoration(
+                  //       //               borderRadius: BorderRadius.circular(15),
+                  //       //               border: Border.all(color: Colors.black)),
+                  //       //           child: Padding(
+                  //       //             padding: const EdgeInsets.all(5),
+                  //       //             child: Text(
+                  //       //                 value.brNm.toString().toLowerCase() == "null" ||
+                  //       //                         value.brNm.toString().isEmpty
+                  //       //                     ? ""
+                  //       //                     : value.brNm.toString()),
+                  //       //           )),
+                  //       //     );}
+                  //       // )
+                  // ],
                   // backgroundColor: P_Settings.wavecolor,
                   // actions: [
                   //   /////////////////// table view in app bar /////////////////

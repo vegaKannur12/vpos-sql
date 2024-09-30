@@ -17,6 +17,7 @@ import 'package:sqlorder24/screen/ORDER/6_uploaddata.dart';
 import 'package:sqlorder24/screen/ORDER/externalDir.dart';
 import 'screen/ADMIN_/adminController.dart';
 /////////////registration keyyyyyyyyyyyyyyyyy
+///FOR SQL -------- VEGADEMOAXVO
 ////demo -------   FR67RTMNSMSM  user----vega,pwd---vega
 ///////new key-----4016ZNMNSMVO
 //////key-------RA98BHRFSMSM---user----kannur  pwd---1
