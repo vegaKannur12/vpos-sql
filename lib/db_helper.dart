@@ -2211,9 +2211,9 @@ class OrderAppDB {
       //         " from 'productDetailsTable' p left join 'salesBagTable' s on p.code  = s.code and s.customerid='$customerId' group by p.pid,p.code,p.item order by p.item";
       itemselectionquery =
           " SELECT p.pid prid,p.code prcode,p.item pritem ,p.hsn hsn ,p.rate1 prrate1,sum(s.qty) qty, " +
-              "(st.pstock-IFNULL(x.slQty,0) ) ActStock " +
+              "(cast(st.pstock as real)-IFNULL(x.slQty,0) ) ActStock " +
               "from 'productDetailsTable' p " +
-              "inner join stockDetailsTable st on p.code=st.ppid and st.pstock >= 0 " +
+              "inner join stockDetailsTable st on p.code=st.ppid and cast(st.pstock as real) > 0 " +
               "Left Join (Select sd.code slCode , sum(sd.qty) slQty from salesMasterTable sm " +
               "Inner Join salesDetailTable sd on sm.sales_id=sd.sales_id " +
               "where sm.sflag = 0 and sm.cancel=0 Group By sd.code) x on x.slCode= st.ppid " +
@@ -2245,9 +2245,9 @@ class OrderAppDB {
     var stockreport;
     stockreport = "SELECT p.code prcode,p.item pritem, " +
         "st.pstock OpStock,IFNULL(x.slQty,0) SalesQty, " +
-        "(st.pstock-IFNULL(x.slQty,0) ) BalStock " +
+        "(cast(st.pstock as real)-IFNULL(x.slQty,0) ) BalStock " +
         "from 'productDetailsTable' p " +
-        "inner join stockDetailsTable st on p.code=st.ppid and st.pstock > 0 " +
+        "inner join stockDetailsTable st on p.code=st.ppid and cast(st.pstock as real)  > 0 " +
         "Left Join (Select sd.code slCode , sum(sd.qty) slQty from salesMasterTable sm " +
         "Inner Join salesDetailTable sd on sm.sales_id=sd.sales_id " +
         "where sm.sflag = 0 and sm.cancel=0 Group By sd.code) x on x.slCode= st.ppid " +

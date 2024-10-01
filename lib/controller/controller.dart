@@ -4574,9 +4574,7 @@ class Controller extends ChangeNotifier {
                 }
                 print("O Detail String---$omDetString");
               }
-
               ///Code to upload
-
               var res2 = await SqlConn.writeData(
                   "DELETE from [sale_master] WHERE [s_id]=$itemsid AND [s_invoice_id]='$itembillno'");
               var res22 = await SqlConn.writeData(

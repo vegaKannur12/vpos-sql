@@ -56,7 +56,7 @@ class RegistrationData2 {
     conip = json['CON_IP'];
     conport = json['CON_PORT'];
     conuser = json['CON_USER'];
-    conpass = json['CON_PASS'];
+    conpass = json['CON_PASS'].toString().trimLeft();
     condb = json['CON_DB'];
   }
 
